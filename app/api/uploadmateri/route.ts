@@ -13,10 +13,12 @@ interface Metadata {
   uploadTime: string;
 }
 
-const uploadDir = join(process.cwd(), 'public/e-lib'); 
+const uploadDir = join(process.cwd(), 'public/e-lib');
+const jsonDir = join(process.cwd(), 'public/e-lib/json');  // Directory to store metadata
+
 export const config = {
   api: {
-    bodyParser: false,  
+    bodyParser: false,
   },
 };
 
@@ -35,8 +37,8 @@ export async function POST(request: NextRequest) {
     }
 
     const originalFileName = file.name;
-    const fileExtension = originalFileName.split('.').pop(); // Get file extension
-    const filePath = join(uploadDir, category, originalFileName); // Save file in category folder
+    const fileExtension = originalFileName.split('.').pop();
+    const filePath = join(uploadDir, category, originalFileName);
 
     const categoryDir = join(uploadDir, category);
     await mkdir(categoryDir, { recursive: true });
@@ -45,20 +47,21 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
-    const uploadTime = new Date().toISOString(); 
+    const uploadTime = new Date().toISOString();
 
-    const metadata = {
+    const metadata: Metadata = {
       name,
       semester,
       dosen,
       category,
       originalFileName,
       fileSize: file.size,
-      uploadTime, // Store the formatted upload time
+      uploadTime,
     };
 
-    // Save metadata as a JSON file alongside the uploaded file
-    await writeFile(`${filePath}.json`, JSON.stringify(metadata));
+    // Create metadata file with the same name as the uploaded file (e.g., file.json)
+    const metadataFilePath = join(jsonDir, `${originalFileName}.json`);
+    await writeFile(metadataFilePath, JSON.stringify(metadata));
 
     return NextResponse.json({
       message: 'File uploaded successfully',
@@ -72,42 +75,39 @@ export async function POST(request: NextRequest) {
 
 // List files in the category
 export async function GET(request: NextRequest) {
-  const category = request.nextUrl.searchParams.get('category'); // Correct way to access query params
+  const category = request.nextUrl.searchParams.get('category');
   if (!category) {
     return NextResponse.json({ error: 'Category is required' }, { status: 400 });
   }
 
-  const categoryDir = join(process.cwd(), 'public/e-lib', category);
+  const categoryDir = join(uploadDir, category);
 
   try {
-    // Read the files in the category directory
     const files = await readdir(categoryDir);
-    
+
     const fileList: any[] = [];
-    
+
     for (const file of files) {
       const filePath = join(categoryDir, file);
       const stats = fs.statSync(filePath);
-      
+
       if (stats.isFile()) {
-        // Read metadata file for each file (it should be a .json file)
-        const metadataPath = `${filePath}.json`;
-        let metadata: any = {};
-        
+        const metadataFilePath = join(jsonDir, `${file}.json`);
+        let metadata: Metadata = { name: '', semester: '', dosen: '', category: '', originalFileName: '', fileSize: 0, uploadTime: '' };
+
         try {
-          const metadataFile = await readFile(metadataPath, 'utf-8');
+          const metadataFile = await readFile(metadataFilePath, 'utf-8');
           metadata = JSON.parse(metadataFile);
         } catch (err) {
           console.error('Error reading metadata for file', file);
         }
-        
-        // Combine the file details with the metadata
+
         fileList.push({
           name: file,
           size: stats.size,
-          semester: metadata.semester || 'N/A',  // Default to 'N/A' if no semester is found
-          dosen: metadata.dosen || 'N/A',  // Default to 'N/A' if no dosen is found
-          uploadTime: metadata.uploadTime || 'N/A', // Include uploadTime from metadata
+          semester: metadata.semester || 'N/A',
+          dosen: metadata.dosen || 'N/A',
+          uploadTime: metadata.uploadTime || 'N/A',
           path: filePath,
         });
       }

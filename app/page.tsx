@@ -12,9 +12,10 @@ import Footer from "../components/Footer";
 const Page = () => {
   useEffect(() => {
     AOS.init({
+      offset: 200,
       duration: 1000,
       easing: "ease-in-out",
-      once: true, // Animasi hanya sekali
+      delay: 100,
     });
   }, []);
 
@@ -47,15 +48,21 @@ const Page = () => {
 
       {/* Contact Form Section */}
       <section
-        className="bg-gray-800 py-16"
+        className="bg-gray-800"
         data-aos="fade-up"
         data-aos-duration="1000"
       >
         <ContactForm />
       </section>
 
+    <section
+    className="bg-gray-800"
+    data-aos="fade-up"
+    data-aos-duration="1000"
+    >
       {/* Footer */}
       <Footer />
+    </section>
     </div>
   );
 };
