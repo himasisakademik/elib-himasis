@@ -30,9 +30,9 @@ const Header = () => {
         {/* Navbar Menu for Desktop (Aligned to the right) */}
         <nav className="hidden lg:flex ml-auto space-x-8 mt-8 text-lg">
           <Link href="/" className="nav-link">Home</Link>
-          <Link href="/category/matkul" className="nav-link">Mata Kuliah</Link>
-          <Link href="/category/jurnal" className="nav-link">Jurnal</Link>
-          <Link href="/category/tugas-akhir" className="nav-link">Tugas Akhir</Link>
+          <Link href="/library/search/matkul" className="nav-link">Mata Kuliah</Link>
+          <Link href="/library/search/jurnal" className="nav-link">Jurnal</Link>
+          <Link href="/library/search/tugas-akhir" className="nav-link">Tugas Akhir</Link>
         </nav>
 
         {/* Hamburger Menu for Mobile */}

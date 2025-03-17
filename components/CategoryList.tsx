@@ -174,6 +174,16 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         </button>
       </div>
 
+      {/* If no files are uploaded */}
+      {files.length === 0 && (
+        <div className="text-center text-lg text-gray-400">No materials uploaded yet for {filterCategory}.</div>
+      )}
+
+      {/* If no search results */}
+      {filteredFiles.length === 0 && searchQuery && (
+        <div className="text-center text-lg text-gray-400">Nothing found for your search.</div>
+      )}
+
       {/* File List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentFiles.map((file, index) => {

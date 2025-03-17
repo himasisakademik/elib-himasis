@@ -9,28 +9,26 @@ const Footer = () => {
       <div className="container mx-auto flex flex-wrap justify-between items-center">
         {/* Logo on the left */}
         <div className="flex items-center mb-4 md:mb-0">
-        <div className="w-24 h-24 rounded-full border-4 border-gradient-to-r from-teal-500 via-blue-500 to-purple-500 overflow-hidden">
             <Image
               src="/himasis.png"
               alt="Logo"
-              width={150}
-              height={150}
+              width={90}
+              height={90}
               className="object-cover"
             />
-          </div>
         </div>
 
         {/* Footer Content on the Right */}
         <div className="w-full md:w-auto flex flex-wrap justify-between items-center">
           {/* Navigation Links */}
           <div className="flex space-x-6 mb-4 md:mb-0">
-            <Link href="/category/matkul" className="text-sm text-gray-400 hover:text-primary transition-colors">
+            <Link href="/library/search/matkul" className="text-sm text-gray-400 hover:text-primary transition-colors">
               Mata Kuliah
             </Link>
-            <Link href="/category/jurnal" className="text-sm text-gray-400 hover:text-primary transition-colors">
+            <Link href="/library/search/jurnal" className="text-sm text-gray-400 hover:text-primary transition-colors">
               Jurnal
             </Link>
-            <Link href="/category/tugas-akhir" className="text-sm text-gray-400 hover:text-primary transition-colors">
+            <Link href="/library/search/tugas-akhir" className="text-sm text-gray-400 hover:text-primary transition-colors">
               Tugas Akhir
             </Link>
           </div>
