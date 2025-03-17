@@ -33,6 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+/public/e-lib/all
+/public/e-lib/json
+/public/e-lib/jurnal
+/public/e-lib/matkul
+/public/e-lib/tugas-akhir
+
 # vercel
 .vercel
 
