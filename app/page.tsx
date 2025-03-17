@@ -2,12 +2,13 @@
 "use client";
 import React, { useEffect } from "react";
 import AOS from "aos";
-import "aos/dist/aos.css";
+import "aos/dist/aos.css";  // Ensure AOS styles are included
 import Header from "../components/Header";
 import CategoryList from "../components/CategoryList";
 import AboutUs from "../components/AboutUs";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
+import HomePage from "../components/HomePage";  // Import the HomePage component
 
 const Page = () => {
   useEffect(() => {
@@ -26,6 +27,9 @@ const Page = () => {
     <div className="bg-gray-900 text-white">
       {/* Header */}
       <Header />
+
+      {/* HomePage Section */}
+      <HomePage /> {/* This calls the HomePage component */}
 
       {/* About Us Section */}
       <section
@@ -55,14 +59,14 @@ const Page = () => {
         <ContactForm />
       </section>
 
-    <section
-    className="bg-gray-800"
-    data-aos="fade-up"
-    data-aos-duration="1000"
-    >
-      {/* Footer */}
-      <Footer />
-    </section>
+      {/* Footer Section */}
+      <section
+        className="bg-gray-800"
+        data-aos="fade-up"
+        data-aos-duration="1000"
+      >
+        <Footer />
+      </section>
     </div>
   );
 };
