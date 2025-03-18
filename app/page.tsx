@@ -2,13 +2,13 @@
 "use client";
 import React, { useEffect } from "react";
 import AOS from "aos";
-import "aos/dist/aos.css";  // Ensure AOS styles are included
+import "aos/dist/aos.css";  
 import Header from "../components/Header";
 import CategoryList from "../components/CategoryList";
 import AboutUs from "../components/AboutUs";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
-import HomePage from "../components/HomePage";  // Import the HomePage component
+import HomePage from "../components/HomePage";  
 
 const Page = () => {
   useEffect(() => {
@@ -20,8 +20,7 @@ const Page = () => {
     });
   }, []);
 
-  // You can pass a dynamic category if needed, otherwise use a fixed one like "matkul"
-  const category = "matkul";  // Example: You can dynamically change this value
+  const category = "matkul";  
 
   return (
     <div className="bg-gray-900 text-white">
@@ -29,7 +28,7 @@ const Page = () => {
       <Header />
 
       {/* HomePage Section */}
-      <HomePage /> {/* This calls the HomePage component */}
+      <HomePage /> 
 
       {/* About Us Section */}
       <section
@@ -46,7 +45,6 @@ const Page = () => {
         data-aos="fade-up"
         data-aos-duration="1000"
       >
-        {/* Pass the category as a prop to CategoryList */}
         <CategoryList category={category} />
       </section>
 
@@ -60,13 +58,7 @@ const Page = () => {
       </section>
 
       {/* Footer Section */}
-      <section
-        className="bg-gray-800"
-        data-aos="fade-up"
-        data-aos-duration="1000"
-      >
         <Footer />
-      </section>
     </div>
   );
 };

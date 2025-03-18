@@ -1,8 +1,8 @@
-"use client"; // Mark this file as a client component to enable hooks
+"use client"; 
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link"; // Import Link for navigation
+import Link from "next/link"; 
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,10 +13,8 @@ const Header = () => {
 
   return (
     <header className="bg-gray-900 text-white p-8 relative">
-      {/* Logo and Title */}
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          {/* Logo with a modern gradient border */}
             <Image
               src="/himasis.png"
               alt="Logo"
@@ -27,7 +25,6 @@ const Header = () => {
           <h1 className="text-4xl font-extrabold font-[--font-geist-sans]">E-Library Himasis</h1>
         </div>
 
-        {/* Navbar Menu for Desktop (Aligned to the right) */}
         <nav className="hidden lg:flex ml-auto space-x-8 mt-8 text-lg">
           <Link href="/" className="nav-link">Home</Link>
           <Link href="/library/search/matkul" className="nav-link">Mata Kuliah</Link>
@@ -35,7 +32,6 @@ const Header = () => {
           <Link href="/library/search/tugas-akhir" className="nav-link">Tugas Akhir</Link>
         </nav>
 
-        {/* Hamburger Menu for Mobile */}
         <div className="lg:hidden" onClick={toggleMenu}>
           <button className="text-white">
             <i className={`fas ${menuOpen ? "fa-times" : "fa-bars"} text-2xl`}></i>

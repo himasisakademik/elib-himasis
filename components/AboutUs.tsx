@@ -9,10 +9,10 @@ const AboutUs = () => {
         <div className="flex flex-col md:flex-row items-center justify-center space-x-8">
           <div className="relative mb-8 md:mb-0 w-full md:w-1/2">
             <Image
-              src="/akademik.jpeg" // Replace with your image path
+              src="/akademik.jpeg" 
               alt="About Us Image"
-              width={500} // Define width of the image
-              height={500} // Define height of the image
+              width={500} 
+              height={500} 
               className="rounded-lg border-4 border-primary shadow-xl transition-transform duration-500 hover:scale-105 hover:shadow-2xl"
             />
           </div>

@@ -14,7 +14,7 @@ interface Metadata {
 }
 
 const uploadDir = join(process.cwd(), 'public/e-lib');
-const jsonDir = join(process.cwd(), 'public/e-lib/json');  // Directory to store metadata
+const jsonDir = join(process.cwd(), 'public/e-lib/json'); 
 
 export const config = {
   api: {
@@ -22,7 +22,6 @@ export const config = {
   },
 };
 
-// Handle file upload
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -59,7 +58,6 @@ export async function POST(request: NextRequest) {
       uploadTime,
     };
 
-    // Create metadata file with the same name as the uploaded file (e.g., file.json)
     const metadataFilePath = join(jsonDir, `${originalFileName}.json`);
     await writeFile(metadataFilePath, JSON.stringify(metadata));
 
@@ -73,7 +71,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// List files in the category
+
 export async function GET(request: NextRequest) {
   const category = request.nextUrl.searchParams.get('category');
   if (!category) {

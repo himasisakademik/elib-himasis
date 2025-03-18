@@ -98,7 +98,7 @@ const ContactForm = () => {
             name="phone"
             value={form.phone}
             onChange={handleChange}
-            maxLength={13}  // Max input length 13 characters
+            maxLength={13}  
             placeholder="Your Phone"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
           />
@@ -109,7 +109,7 @@ const ContactForm = () => {
             name="nim"
             value={form.nim}
             onChange={handleChange}
-            maxLength={10}  // Max input length 10 characters
+            maxLength={10}  
             placeholder="Your NIM"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
           />
@@ -120,7 +120,7 @@ const ContactForm = () => {
             name="angkatan"
             value={form.angkatan}
             onChange={handleChange}
-            maxLength={4}  // Max input length 4 characters
+            maxLength={4}  
             placeholder="Your Angkatan"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
           />

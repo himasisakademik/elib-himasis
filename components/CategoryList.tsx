@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaSortAmountDown, FaSortAmountUp, FaFileAlt, FaFilter, FaDownload } from 'react-icons/fa'; // Importing icons for UI
-import { AiOutlineInstagram, AiOutlineWhatsApp } from 'react-icons/ai'; // Icons for social media
+import { FaSearch, FaSortAmountDown, FaSortAmountUp, FaFileAlt, FaFilter, FaDownload } from 'react-icons/fa'; 
+import { AiOutlineInstagram, AiOutlineWhatsApp } from 'react-icons/ai'; 
 
 interface File {
   name: string;
@@ -69,7 +69,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
 
   const handleRecordsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRecordsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page when changing records per page
+    setCurrentPage(1); 
   };
 
   const filteredFiles = sortedFiles.filter(file => {
@@ -80,21 +80,17 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
     );
   });
 
-  // Pagination Logic
   const indexOfLastFile = currentPage * recordsPerPage;
   const indexOfFirstFile = indexOfLastFile - recordsPerPage;
   const currentFiles = filteredFiles.slice(indexOfFirstFile, indexOfLastFile);
 
-  // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  // Total pages
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(filteredFiles.length / recordsPerPage); i++) {
     pageNumbers.push(i);
   }
 
-  // Share URL for social media
   const getShareUrl = (fileName: string) => {
     const fileUrl = `${window.location.origin}/e-lib/${filterCategory}/${fileName}`;
     return {
@@ -107,9 +103,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
     <div className="p-6">
       <h2 className="text-4xl font-extrabold text-center mb-6 text-primary font-[--font-geist-sans]">Materi {filterCategory}</h2>
 
-      {/* Filter and Sort Controls */}
       <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-        {/* Filter By Category */}
         <div className="flex items-center space-x-2 w-full sm:w-auto">
           <FaFilter className="text-lg text-primary" />
           <select
@@ -123,7 +117,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           </select>
         </div>
 
-        {/* Sort By */}
         <div className="flex items-center space-x-2 w-full sm:w-auto">
           <FaSortAmountDown className="text-lg text-primary" />
           <select
@@ -139,7 +132,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           <FaSortAmountUp className="text-lg text-primary" />
         </div>
 
-        {/* Records Per Page */}
         <div className="flex items-center space-x-2 w-full sm:w-auto">
           <span className="text-primary font-[--font-geist-sans]">Show</span>
           <select
@@ -157,7 +149,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="mb-6 flex justify-center items-center space-x-2">
         <input
           type="text"
@@ -168,23 +159,20 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         />
         <button
           className="bg-primary text-white p-3 rounded-lg hover:bg-primary-dark transition-all"
-          onClick={() => setSearchQuery('')} // Clear search query on click
+          onClick={() => setSearchQuery('')} 
         >
           <FaSearch />
         </button>
       </div>
 
-      {/* If no files are uploaded */}
       {files.length === 0 && (
         <div className="text-center text-lg text-gray-400">No materials uploaded yet for {filterCategory}.</div>
       )}
 
-      {/* If no search results */}
       {filteredFiles.length === 0 && searchQuery && (
         <div className="text-center text-lg text-gray-400">Nothing found for your search.</div>
       )}
 
-      {/* File List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentFiles.map((file, index) => {
           const shareUrls = getShareUrl(file.name);
@@ -233,7 +221,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         })}
       </div>
 
-      {/* Pagination Controls */}
       <div className="flex justify-center mt-6 space-x-2">
         {pageNumbers.map((number) => (
           <button

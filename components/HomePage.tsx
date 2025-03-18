@@ -1,12 +1,10 @@
-// components/homePage.tsx
 "use client";
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Image from "next/image";  // Import Image from next/image
+import Image from "next/image";  
 
-// Import logo image (adjust path if needed)
-import Logo from "../public/akademik_home.png";  // Adjust the path to your logo
+import Logo from "../public/akademik_home.png";  
 
 const HomePage = () => {
   useEffect(() => {
@@ -32,7 +30,6 @@ const HomePage = () => {
       data-aos-duration="1500"
     >
       <div className="flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0 md:space-x-8 w-full max-w-screen-xl">
-        {/* Left Section */}
         <div className="text-center md:text-left">
           <h1 className="text-5xl font-extrabold mb-4 tracking-tight leading-tight">
             E - Library
@@ -48,16 +45,15 @@ const HomePage = () => {
           </button>
         </div>
 
-        {/* Right Section: Logo Image */}
         <div className="flex justify-center md:justify-end">
           <Image
-            src={Logo}  // Path to the logo file
+            src={Logo}  
             alt="Logo"
             className="rounded-xl shadow-2xl"
-            width={300}  // Adjust width to your desired size
-            height={300} // Adjust height to your desired size
-            data-aos="fade-left"  // Applying fade-left animation
-            data-aos-duration="2000" // Slow fade-in effect (increase duration)
+            width={300}  
+            height={300} 
+            data-aos="fade-left"  
+            data-aos-duration="2000" 
           />
         </div>
       </div>

@@ -1,14 +1,13 @@
-"use client";  // Add this line at the top to mark this file as a client component
+"use client";  
 
-import { useParams } from 'next/navigation'; // This is how you can access the dynamic route parameter
-import CategoryList from '../../../../components/CategoryList'; // Import the CategoryList component
+import { useParams } from 'next/navigation'; 
+import CategoryList from '../../../../components/CategoryList'; 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const CategoryPage = () => {
-  const { category } = useParams(); // Retrieve the category from the URL
+  const { category } = useParams(); 
 
-  // Ensure the category is a string
   const categoryString = Array.isArray(category) ? category[0] : category;
 
   if (!categoryString) {
@@ -17,10 +16,9 @@ const CategoryPage = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col overflow-x-hidden">
-      {/* Category List Section */}
       <Header />
       <section className="py-12 flex-grow max-w-full">
-        <CategoryList category={categoryString} /> {/* Pass the category to CategoryList */}
+        <CategoryList category={categoryString} />
       </section>
       <Footer />
     </div>
