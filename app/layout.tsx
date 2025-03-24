@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import "./globals.css";
 import { Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
+import { SessionProvider } from "next-auth/react";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -25,10 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`scroll-smooth ${clashDisplay.variable} ${spaceGrotesk.variable}`}
-      >
-        {children}
+      <body className={`scroll-smooth ${clashDisplay.variable} ${spaceGrotesk.variable}`}>
+        {/* Tambahkan SessionProvider di sini */}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

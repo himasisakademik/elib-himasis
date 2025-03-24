@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 import React, { useEffect } from "react";
 import AOS from "aos";
@@ -18,47 +17,45 @@ const Page = () => {
       easing: "ease-in-out",
       delay: 100,
     });
+
+    // Pastikan navigasi tidak ketiban oleh efek AOS
+    document.body.style.overflow = "visible";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   const category = "matkul";  
 
   return (
-    <div className="bg-gray-900 text-white">
-      {/* Header */}
+    <div className="relative bg-gray-900 text-white overflow-visible">
+      {/* Header tetap di atas */}
       <Header />
 
-      {/* HomePage Section */}
-      <HomePage /> 
+      {/* Wrapper untuk mengatasi AOS overlap */}
+      <div className="relative z-10">
+        {/* HomePage Section */}
+        <HomePage /> 
 
-      {/* About Us Section */}
-      <section
-        className="bg-gray-800 py-16"
-        data-aos="fade-up"
-        data-aos-duration="1000"
-      >
-        <AboutUs />
-      </section>
+        {/* About Us Section */}
+        <section className="bg-gray-800 py-16" data-aos="fade-up" data-aos-duration="1000">
+          <AboutUs />
+        </section>
 
-      {/* Category Section */}
-      <section
-        className="bg-gray-800 py-16"
-        data-aos="fade-up"
-        data-aos-duration="1000"
-      >
-        <CategoryList category={category} />
-      </section>
+        {/* Category Section */}
+        <section className="bg-gray-800 py-16" data-aos="fade-up" data-aos-duration="1000">
+          <CategoryList category={category} />
+        </section>
 
-      {/* Contact Form Section */}
-      <section
-        className="bg-gray-800"
-        data-aos="fade-up"
-        data-aos-duration="1000"
-      >
-        <ContactForm />
-      </section>
+        {/* Contact Form Section */}
+        <section className="bg-gray-800" data-aos="fade-up" data-aos-duration="1000">
+          <ContactForm />
+        </section>
+      </div>
 
       {/* Footer Section */}
-        <Footer />
+      <Footer />
     </div>
   );
 };

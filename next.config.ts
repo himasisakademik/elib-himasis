@@ -4,8 +4,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   experimental: {
     serverActions: {
-      bodySizeLimit: '20mb',
+      bodySizeLimit: "20mb",
     },
+  },
+  images: {
+    domains: ["lh3.googleusercontent.com", "i.pravatar.cc"], // Tambahkan domain Google
   },
 };
 
