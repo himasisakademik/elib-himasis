@@ -80,7 +80,7 @@ const UploadMateri = ({ session }: { session: any }) => {
   return (
     <div className="bg-gray-900 text-white">
       <Header />
-      <section className="bg-gray-900 py-16 px-8">
+      <section className="mt-20 bg-gray-900 py-16 px-8">
         <div className="max-w-4xl mx-auto p-8 rounded-lg shadow-xl bg-gray-800">
           <h2 className="text-3xl font-semibold text-center text-white mb-8">
             Upload Materi
