@@ -17,7 +17,7 @@ const AboutUs = () => {
             />
           </div>
           <div className="w-full md:w-1/2">
-            <p className="text-lg text-gray-600 font-[--font-geist-sans]">
+            <p className="text-2xl text-gray-600 font-[--font-geist-sans]">
               Himasis E-library is dedicated to providing access to academic resources for students in the Himasis community. We strive to
               make learning easier and more efficient with our vast collection of educational materials.
             </p>

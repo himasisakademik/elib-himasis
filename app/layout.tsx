@@ -25,11 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`scroll-smooth ${clashDisplay.variable} ${spaceGrotesk.variable}`}>
-        {/* Tambahkan SessionProvider di sini */}
+    <html lang="en" className="overflow-x-hidden">
+      <body className={`scroll-smooth overflow-x-hidden ${clashDisplay.variable} ${spaceGrotesk.variable}`}>
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );
 }
+
