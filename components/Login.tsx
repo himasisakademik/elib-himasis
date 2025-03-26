@@ -4,7 +4,7 @@ import Header from "./Header";
 
 const Login = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900">
+    <div className="min-h-screen mt-20 flex flex-col bg-gray-900">
       <Header />
       <div className="flex flex-1 items-center justify-center">
         <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-sm w-full text-center">
