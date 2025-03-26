@@ -33,9 +33,11 @@ const Page = () => {
       {/* Header tetap di atas */}
       <Header />
 
-      <section className="bg-gray-800 py-16 w-full h-full min-h-screen" data-aos="fade-up" data-aos-duration="1000">
-          <HomePage />
-        </section>
+      {/* Wrapper untuk mengatasi AOS overlap */}
+      <div className="bg-gray-900 text-white">
+
+        {/* HomePage Section */}
+        <HomePage /> 
 
         {/* About Us Section */}
         <section className="bg-gray-800 py-16" data-aos="fade-up" data-aos-duration="1000">
@@ -51,6 +53,7 @@ const Page = () => {
         <section className="bg-gray-800" data-aos="fade-up" data-aos-duration="1000">
           <ContactForm />
         </section>
+      </div>
 
       {/* Footer Section */}
       <Footer />
