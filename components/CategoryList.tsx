@@ -92,12 +92,13 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   }
 
   const getShareUrl = (fileName: string) => {
-    const fileUrl = `${window.location.origin}/e-lib/${filterCategory}/${fileName}`;
+    const fileUrl = `${window.location.origin}/api/downloadmateri?file=${encodeURIComponent(fileName)}&category=${encodeURIComponent(filterCategory)}`;
     return {
-      whatsapp: `https://wa.me/?text=${encodeURIComponent(fileUrl)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent("Download materi ini: " + fileUrl)}`,
       instagram: `https://www.instagram.com/sharer.php?u=${encodeURIComponent(fileUrl)}`,
     };
   };
+  
 
   return (
     <div className="p-6">
