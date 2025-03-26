@@ -1,4 +1,5 @@
 import React from 'react';
+import Typical from 'react-typical';
 import Image from 'next/image';
 
 const AboutUs = () => {
@@ -18,8 +19,16 @@ const AboutUs = () => {
           </div>
           <div className="w-full md:w-1/2">
             <p className="text-2xl text-gray-600 font-[--font-geist-sans]">
-              Himasis E-library is dedicated to providing access to academic resources for students in the Himasis community. We strive to
-              make learning easier and more efficient with our vast collection of educational materials.
+              <Typical
+                            steps={[
+                              "Himasis E-library is dedicated to providing access to academic resources for students in the Himasis community.",
+                              2000,
+                              "We strive to make learning easier and more efficient with our vast collection of educational materials.",
+                              2000
+                            ]}
+                            loop={Infinity}
+                            wrapper="span"
+                          />
             </p>
           </div>
         </div>

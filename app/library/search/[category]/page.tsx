@@ -11,13 +11,13 @@ const CategoryPage = () => {
   const categoryString = Array.isArray(category) ? category[0] : category;
 
   if (!categoryString) {
-    return <div>Loading...</div>;
+    return <div>Wait kakk...</div>;
   }
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col overflow-x-hidden">
       <Header />
-      <section className="py-12 flex-grow max-w-full">
+      <section className="mt-30 py-12 flex-grow max-w-full">
         <CategoryList category={categoryString} />
       </section>
       <Footer />

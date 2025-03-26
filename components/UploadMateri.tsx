@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FiUpload } from "react-icons/fi";
+import { LogOut } from "lucide-react"; // Menggunakan ikon logout modern
 import Image from "next/image";
 import Swal from "sweetalert2";
 import Header from "@/components/Header";
@@ -78,7 +79,7 @@ const UploadMateri = ({ session }: { session: any }) => {
   };
 
   return (
-    <div className="bg-gray-900 text-white">
+    <div className="bg-gray-900 text-white min-h-screen">
       <Header />
       <section className="mt-20 bg-gray-900 py-16 px-8">
         <div className="max-w-4xl mx-auto p-8 rounded-lg shadow-xl bg-gray-800">
@@ -99,11 +100,13 @@ const UploadMateri = ({ session }: { session: any }) => {
                 Welcome, {session?.user?.name}!
               </h3>
             </div>
+            
+            {/* Tombol Logout dengan Icon & Efek Hover */}
             <button
               onClick={() => signOut()}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-300"
+              className="p-3 bg-transparent text-white rounded-full hover:bg-red-600 hover:scale-110 transition-all duration-300"
             >
-              Logout
+              <LogOut size={24} />
             </button>
           </div>
 
@@ -114,7 +117,7 @@ const UploadMateri = ({ session }: { session: any }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Nama Materi"
-              className="w-full p-4 border border-gray-300 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
@@ -122,7 +125,7 @@ const UploadMateri = ({ session }: { session: any }) => {
               value={semester}
               onChange={(e) => setSemester(e.target.value)}
               placeholder="Semester"
-              className="w-full p-4 border border-gray-300 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
@@ -130,13 +133,13 @@ const UploadMateri = ({ session }: { session: any }) => {
               value={dosen}
               onChange={(e) => setDosen(e.target.value)}
               placeholder="Nama Dosen"
-              className="w-full p-4 border border-gray-300 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <select
               name="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="matkul">Mata Kuliah</option>
               <option value="jurnal">Jurnal</option>
@@ -145,7 +148,7 @@ const UploadMateri = ({ session }: { session: any }) => {
 
             <div
               {...getRootProps()}
-              className="w-full p-4 border border-gray-300 rounded-lg bg-gray-700 text-white cursor-pointer flex items-center justify-center"
+              className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white cursor-pointer flex items-center justify-center"
             >
               <input {...getInputProps()} className="hidden" />
               <FiUpload className="mr-3 text-white text-2xl" />

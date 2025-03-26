@@ -41,10 +41,10 @@ const Header = () => {
         } overflow-hidden`}
       >
         <nav className="flex flex-col space-y-3 p-4 text-center">
-          <Link href="/" className="py-2 hover:bg-gray-700 rounded-md" onClick={toggleMenu}>Home</Link>
-          <Link href="/library/search/matkul" className="py-2 hover:bg-gray-700 rounded-md" onClick={toggleMenu}>Mata Kuliah</Link>
-          <Link href="/library/search/jurnal" className="py-2 hover:bg-gray-700 rounded-md" onClick={toggleMenu}>Jurnal</Link>
-          <Link href="/library/search/tugas-akhir" className="py-2 hover:bg-gray-700 rounded-md" onClick={toggleMenu}>Tugas Akhir</Link>
+          <Link href="/" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Home</Link>
+          <Link href="/library/search/matkul" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Mata Kuliah</Link>
+          <Link href="/library/search/jurnal" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Jurnal</Link>
+          <Link href="/library/search/tugas-akhir" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Tugas Akhir</Link>
         </nav>
       </div>
     </header>

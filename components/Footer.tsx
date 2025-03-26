@@ -19,13 +19,13 @@ const Footer = () => {
 
         <div className="w-full md:w-auto flex flex-wrap justify-between items-center">
           <div className="flex space-x-6 mb-4 md:mb-0">
-            <Link href="/library/search/matkul" className="text-sm text-gray-400 hover:text-primary transition-colors">
+            <Link href="/library/search/matkul" className="text-sm text-gray-400 hover:text-primary transition-colors font-[--font-geist-sans]">
               Mata Kuliah
             </Link>
-            <Link href="/library/search/jurnal" className="text-sm text-gray-400 hover:text-primary transition-colors">
+            <Link href="/library/search/jurnal" className="text-sm text-gray-400 hover:text-primary transition-colors font-[--font-geist-sans]">
               Jurnal
             </Link>
-            <Link href="/library/search/tugas-akhir" className="text-sm text-gray-400 hover:text-primary transition-colors">
+            <Link href="/library/search/tugas-akhir" className="text-sm text-gray-400 hover:text-primary transition-colors font-[--font-geist-sans]">
               Tugas Akhir
             </Link>
           </div>
@@ -70,7 +70,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="mt-6 text-center text-sm text-gray-400">
+      <div className="mt-6 text-center text-sm text-gray-400 font-[--font-geist-sans]">
         <p>&copy; 2025 Himasis. All rights reserved.</p>
       </div>
     </footer>

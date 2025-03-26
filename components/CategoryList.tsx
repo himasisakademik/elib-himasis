@@ -209,7 +209,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                   </a>
                 </div>
                 <a
-                  href={`/e-lib/${filterCategory}/${file.name}`}
+                  href={`/api/downloadmateri?file=${encodeURIComponent(file.name)}&category=${encodeURIComponent(filterCategory)}`}
                   className="text-blue-500 hover:text-blue-700 flex items-center space-x-2 transition-transform transform hover:scale-110"
                   download
                 >

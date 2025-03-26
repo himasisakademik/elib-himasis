@@ -8,6 +8,8 @@ declare module 'react-turnstile';
 declare module 'next-auth/react';
 declare module 'next-auth/middleware';
 declare module 'framer-motion';
+declare module 'lucide-react';
+declare module 'react-typical';
 // // globals.d.ts
 // declare module 'formidable' {
 //     export interface IncomingForm {

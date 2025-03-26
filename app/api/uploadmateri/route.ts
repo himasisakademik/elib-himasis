@@ -13,8 +13,8 @@ interface Metadata {
   uploadTime: string;
 }
 
-const uploadDir = join(process.cwd(), 'public/e-lib');
-const jsonDir = join(process.cwd(), 'public/e-lib/json'); 
+const uploadDir = join(process.cwd(), 'uploads/e-lib');
+const jsonDir = join(uploadDir, 'json');
 
 export const config = {
   api: {
@@ -36,18 +36,21 @@ export async function POST(request: NextRequest) {
     }
 
     const originalFileName = file.name;
-    const fileExtension = originalFileName.split('.').pop();
     const filePath = join(uploadDir, category, originalFileName);
-
     const categoryDir = join(uploadDir, category);
+    
+    // Buat direktori jika belum ada
     await mkdir(categoryDir, { recursive: true });
+    await mkdir(jsonDir, { recursive: true });
 
+    // Simpan file
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
     const uploadTime = new Date().toISOString();
 
+    // Simpan metadata
     const metadata: Metadata = {
       name,
       semester,
@@ -67,10 +70,10 @@ export async function POST(request: NextRequest) {
       ...metadata,
     });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
-
 
 export async function GET(request: NextRequest) {
   const category = request.nextUrl.searchParams.get('category');
@@ -106,7 +109,7 @@ export async function GET(request: NextRequest) {
           semester: metadata.semester || 'N/A',
           dosen: metadata.dosen || 'N/A',
           uploadTime: metadata.uploadTime || 'N/A',
-          path: filePath,
+          path: `/api/downloadmateri?file=${encodeURIComponent(file)}`, 
         });
       }
     }
