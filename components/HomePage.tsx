@@ -35,12 +35,12 @@ const HomePage = () => {
 
   return (
     <section
-  className="bg-gray-900 text-white flex items-center justify-center h-screen min-h-screen w-full px-6 pt-20 md:pt-0 overflow-hidden"
+  className="bg-gray-900 text-white flex flex-col items-center justify-center min-h-[90vh] w-full px-6 pt-24 pb-12"
   data-aos="fade-up"
   data-aos-duration="1500"
 >
 
-<div className="flex mt-28 md:mt-20 flex-col md:flex-row items-center justify-between w-full max-w-7xl">
+<div className="flex md:mt-20 flex-col md:flex-row items-center justify-between w-full max-w-7xl">
 
         {/* Bagian Kiri: Judul, Deskripsi, Button */}
         <div className="text-center md:text-left space-y-6">
@@ -71,21 +71,21 @@ const HomePage = () => {
           </motion.button>
         </div>
 
-        {/* Bagian Kanan: Gambar */}
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-          className="flex justify-center md:justify-end mt-10 md:mt-0"
-        >
-          <Image
-            src={Logo}
-            alt="E-Library Illustration"
-            className="rounded-xl shadow-2xl w-[450px] h-auto"
-            data-aos="fade-left"
-            data-aos-duration="2000"
-          />
-        </motion.div>
+  initial={{ opacity: 0, x: 50 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 1 }}
+  className="flex justify-center md:justify-end w-full mt-10 md:mt-0"
+>
+  <Image
+    src={Logo}
+    alt="E-Library Illustration"
+    className="rounded-xl shadow-2xl w-[90%] max-w-[350px] md:max-w-[450px] h-auto"
+    data-aos="fade-left"
+    data-aos-duration="2000"
+  />
+</motion.div>
+
       </div>
     </section>
   );
