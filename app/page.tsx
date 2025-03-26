@@ -29,16 +29,13 @@ const Page = () => {
   const category = "matkul";  
 
   return (
-    <div className="relative bg-gray-900 text-white overflow-visible">
+    <div className="bg-gray-900 text-white">
       {/* Header tetap di atas */}
       <Header />
 
-      <div className="w-full min-h-screen overflow-x-hidden bg-gray-900">
-  <section className="container mx-auto px-4">
-    <HomePage />
-  </section>
-
-
+      <section className="bg-gray-800 py-16 w-full h-full min-h-screen" data-aos="fade-up" data-aos-duration="1000">
+          <HomePage />
+        </section>
 
         {/* About Us Section */}
         <section className="bg-gray-800 py-16" data-aos="fade-up" data-aos-duration="1000">
@@ -54,7 +51,6 @@ const Page = () => {
         <section className="bg-gray-800" data-aos="fade-up" data-aos-duration="1000">
           <ContactForm />
         </section>
-      </div>
 
       {/* Footer Section */}
       <Footer />

@@ -35,16 +35,16 @@ const HomePage = () => {
 
   return (
     <section
-  className="bg-gray-900 text-white flex flex-col items-center justify-center min-h-[90vh] w-full px-6 pt-24 pb-12"
+  className="bg-gray-900 text-white flex overflow-x-hidden flex-col items-center justify-center min-h-[90vh] w-full px-6 pt-24 pb-12"
   data-aos="fade-up"
   data-aos-duration="1500"
 >
 
-<div className="flex md:mt-20 flex-col md:flex-row items-center justify-between w-full max-w-7xl">
+<div className="flex mt-28 md:mt-20 flex-col md:flex-row items-center justify-between w-full max-w-7xl">
 
         {/* Bagian Kiri: Judul, Deskripsi, Button */}
         <div className="text-center md:text-left space-y-6">
-          <h1 className="mt-35 text-4xl font-extrabold leading-tight tracking-wide font-[--font-geist-sans]">
+          <h1 className="mt-35 text-6xl font-extrabold leading-tight tracking-wide font-[--font-geist-sans]">
             E - Library
           </h1>
 
