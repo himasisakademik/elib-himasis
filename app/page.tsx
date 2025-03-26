@@ -33,11 +33,12 @@ const Page = () => {
       {/* Header tetap di atas */}
       <Header />
 
-      {/* Wrapper untuk mengatasi AOS overlap */}
-      <div className="bg-gray-900 text-white w-full overflow-visible">
+      <div className="w-full min-h-screen overflow-x-hidden bg-gray-900">
+  <section className="container mx-auto px-4">
+    <HomePage />
+  </section>
 
-        {/* HomePage Section */}
-        <HomePage /> 
+
 
         {/* About Us Section */}
         <section className="bg-gray-800 py-16" data-aos="fade-up" data-aos-duration="1000">

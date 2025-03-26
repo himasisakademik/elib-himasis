@@ -44,7 +44,7 @@ const HomePage = () => {
 
         {/* Bagian Kiri: Judul, Deskripsi, Button */}
         <div className="text-center md:text-left space-y-6">
-          <h1 className="mt-35 text-6xl font-extrabold leading-tight tracking-wide font-[--font-geist-sans]">
+          <h1 className="mt-35 text-4xl font-extrabold leading-tight tracking-wide font-[--font-geist-sans]">
             E - Library
           </h1>
 
