@@ -80,6 +80,7 @@ const ContactForm = () => {
             onChange={handleChange}
             placeholder="Your Name"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
+            required
           />
           
           {/* Email Field */}
@@ -90,6 +91,7 @@ const ContactForm = () => {
             onChange={handleChange}
             placeholder="Your Email"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
+            required
           />
           
           {/* Phone Field */}
@@ -101,6 +103,7 @@ const ContactForm = () => {
             maxLength={13}  
             placeholder="Your Phone"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
+            required
           />
 
           {/* NIM Field */}
@@ -112,6 +115,7 @@ const ContactForm = () => {
             maxLength={10}  
             placeholder="Your NIM"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
+            required
           />
 
           {/* Angkatan Field */}
@@ -123,6 +127,7 @@ const ContactForm = () => {
             maxLength={4}  
             placeholder="Your Angkatan"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
+            required
           />
 
           {/* Message Field */}
@@ -132,6 +137,7 @@ const ContactForm = () => {
             onChange={handleChange}
             placeholder="Your Message"
             className="w-full p-4 border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-[--font-geist-sans]"
+            required
           />
 
           {/* CAPTCHA */}
