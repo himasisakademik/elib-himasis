@@ -35,11 +35,13 @@ const HomePage = () => {
 
   return (
     <section
-      className="bg-gray-900 text-white flex items-center justify-center h-screen min-h-screen w-full px-6 overflow-hidden"
-      data-aos="fade-up"
-      data-aos-duration="1500"
-    >
-      <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-7xl">
+  className="bg-gray-900 text-white flex items-center justify-center h-screen min-h-screen w-full px-6 pt-20 md:pt-0 overflow-hidden"
+  data-aos="fade-up"
+  data-aos-duration="1500"
+>
+
+<div className="flex mt-28 md:mt-20 flex-col md:flex-row items-center justify-between w-full max-w-7xl">
+
         {/* Bagian Kiri: Judul, Deskripsi, Button */}
         <div className="text-center md:text-left space-y-6">
           <h1 className="mt-35 text-6xl font-extrabold leading-tight tracking-wide font-[--font-geist-sans]">

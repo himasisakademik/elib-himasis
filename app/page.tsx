@@ -34,7 +34,8 @@ const Page = () => {
       <Header />
 
       {/* Wrapper untuk mengatasi AOS overlap */}
-      <div className="relative z-10">
+      <div className="relative bg-gray-900 text-white min-h-screen overflow-visible">
+
         {/* HomePage Section */}
         <HomePage /> 
 
