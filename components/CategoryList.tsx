@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaSortAmountDown, FaSortAmountUp, FaFileAlt, FaFilter, FaDownload } from 'react-icons/fa'; 
+import { FaSearch, FaCopy, FaSortAmountDown, FaSortAmountUp, FaFileAlt, FaFilter, FaDownload } from 'react-icons/fa'; 
 import { AiOutlineInstagram, AiOutlineWhatsApp } from 'react-icons/ai'; 
 
 interface File {
@@ -23,6 +23,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [recordsPerPage, setRecordsPerPage] = useState<number>(10);
+  const [copiedFile, setCopiedFile] = useState<string | null>(null); // State untuk notifikasi copy
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -92,16 +93,33 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   }
 
   const getShareUrl = (fileName: string) => {
-    const fileUrl = `${window.location.origin}/api/downloadmateri?file=${encodeURIComponent(fileName)}&category=${encodeURIComponent(filterCategory)}`;
+    const fileUrl = `${window.location.origin}/api/downloadmateri?materi=${encodeURIComponent(fileName)}&category=${encodeURIComponent(filterCategory)}`;
     return {
-      whatsapp: `https://wa.me/?text=${encodeURIComponent("Download materi ini: " + fileUrl)}`,
-      instagram: `https://www.instagram.com/sharer.php?u=${encodeURIComponent(fileUrl)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent("Hello Sobat Himasis! Silahkan dibaca dengan sebaik-baiknya Materi E-Library Himasis berikut : \n" + fileUrl + "\n\nThank You...\nSemoga Bermanfaat!")}`,
+      fileUrl: fileUrl, // ✅ Pastikan `fileUrl` ikut dikembalikan
     };
   };
   
+  
+  const handleCopyUrl = (fileUrl: string, fileName: string) => {
+    navigator.clipboard.writeText(fileUrl);
+    setCopiedFile(fileName);
+
+    setTimeout(() => {
+      setCopiedFile(null);
+    }, 2000);
+  };
+
 
   return (
     <div className="p-6">
+      <div className="p-6 relative">
+      {/* Notifikasi Copy */}
+      {copiedFile && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300 animate-fade-in">
+          ✅ URL "{copiedFile}" berhasil disalin!
+        </div>
+      )}
       <h2 className="text-4xl font-extrabold text-center mb-6 text-primary font-[--font-geist-sans]">Materi {filterCategory}</h2>
 
       <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
@@ -174,9 +192,9 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         <div className="text-center text-lg text-gray-400">Nothing found for your search.</div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentFiles.map((file, index) => {
-          const shareUrls = getShareUrl(file.name);
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedFiles.map((file, index) => {
+          const { whatsapp, fileUrl } = getShareUrl(file.name);
           return (
             <div
               key={index}
@@ -192,34 +210,39 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                   <p className="text-sm text-gray-400">Uploaded: {new Date(file.uploadTime).toLocaleString()}</p>
                 </div>
               </div>
+
               <div className="flex justify-between items-center">
+                {/* Bagian Share */}
                 <div className="flex space-x-3">
-                  <a
-                    href={shareUrls.whatsapp}
-                    target="_blank"
-                    className="text-green-500 hover:text-green-700"
-                  >
+                  <a href={whatsapp} target="_blank" className="text-green-500 hover:text-green-700">
                     <AiOutlineWhatsApp className="text-2xl" />
                   </a>
-                  <a
-                    href={shareUrls.instagram}
-                    target="_blank"
-                    className="text-pink-500 hover:text-pink-700"
+                </div>
+
+                {/* Bagian Copy & Download */}
+                <div className="flex space-x-3">
+                  {/* Ikon Copy */}
+                  <button
+                    onClick={() => handleCopyUrl(fileUrl, file.name)}
+                    className="text-yellow-500 hover:text-yellow-700 flex items-center space-x-2 transition-transform transform hover:scale-110"
                   >
-                    <AiOutlineInstagram className="text-2xl" />
+                    <FaCopy className="text-lg" />
+                  </button>
+
+                  {/* Ikon Download */}
+                  <a
+                    href={fileUrl}
+                    className="text-blue-500 hover:text-blue-700 flex items-center space-x-2 transition-transform transform hover:scale-110"
+                    download
+                  >
+                    <FaDownload className="text-lg" />
                   </a>
                 </div>
-                <a
-                  href={`/api/downloadmateri?file=${encodeURIComponent(file.name)}&category=${encodeURIComponent(filterCategory)}`}
-                  className="text-blue-500 hover:text-blue-700 flex items-center space-x-2 transition-transform transform hover:scale-110"
-                  download
-                >
-                  <FaDownload className="text-lg" />
-                </a>
               </div>
             </div>
           );
         })}
+      </div>
       </div>
 
       <div className="flex justify-center mt-6 space-x-2">

@@ -5,7 +5,7 @@ import fs from 'fs/promises';
 const uploadDir = join(process.cwd(), 'uploads/e-lib');
 
 export async function GET(request: NextRequest) {
-  const fileName = request.nextUrl.searchParams.get('file');
+  const fileName = request.nextUrl.searchParams.get('materi');
   const category = request.nextUrl.searchParams.get('category');
 
   if (!fileName || !category) {
