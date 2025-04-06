@@ -5,12 +5,15 @@ import fs from 'fs';
 
 interface Metadata {
   name: string;
-  semester: string;
-  dosen: string;
+  semester?: string;
+  dosen?: string;
   category: string;
   originalFileName: string;
   fileSize: number;
   uploadTime: string;
+  penerbit?: string;  // Menambahkan penerbit untuk kategori umum
+  tahunTerbit?: string;  // Menambahkan tahun terbit untuk kategori umum
+  deskripsi?: string;  // Menambahkan deskripsi untuk kategori umum
 }
 
 const uploadDir = join(process.cwd(), 'uploads/e-lib');
@@ -31,42 +34,82 @@ export async function POST(request: NextRequest) {
     const dosen = formData.get('dosen') as string;
     const category = formData.get('category') as string;
 
-    if (!file || !name || !semester || !dosen || !category) {
+    if (!file || !name || !category) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const originalFileName = file.name;
-    const filePath = join(uploadDir, category, originalFileName);
-    const categoryDir = join(uploadDir, category);
-    
-    // Buat direktori jika belum ada
-    await mkdir(categoryDir, { recursive: true });
-    await mkdir(jsonDir, { recursive: true });
+    // Menangani kategori umum
+    if (category === "umum") {
+      const penerbit = formData.get('penerbit') as string;
+      const tahunTerbit = formData.get('tahun_terbit') as string;
+      const deskripsi = formData.get('deskripsi') as string;
 
-    // Simpan file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
+      if (!penerbit || !tahunTerbit || !deskripsi) {
+        return NextResponse.json({ error: 'Missing required fields for "umum" category' }, { status: 400 });
+      }
 
-    const uploadTime = new Date().toISOString();
+      const metadata: Metadata = {
+        name,
+        category,
+        originalFileName: file.name,
+        fileSize: file.size,
+        uploadTime: new Date().toISOString(),
+        penerbit,
+        tahunTerbit,
+        deskripsi,
+      };
 
-    // Simpan metadata
+      // Buat direktori kategori jika belum ada
+      const categoryDir = join(uploadDir, category);
+      await mkdir(categoryDir, { recursive: true });
+
+      // Simpan file ke direktori sesuai kategori
+      const filePath = join(categoryDir, file.name);
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      await writeFile(filePath, buffer);
+
+      // Simpan metadata ke file JSON
+      const metadataFilePath = join(jsonDir, `${file.name}.json`);
+      await mkdir(jsonDir, { recursive: true });
+      await writeFile(metadataFilePath, JSON.stringify(metadata));
+
+      return NextResponse.json({
+        message: 'File uploaded successfully',
+        fileName: file.name,
+        ...metadata,
+      });
+    }
+
+    // Menangani kategori selain "umum"
     const metadata: Metadata = {
       name,
       semester,
       dosen,
       category,
-      originalFileName,
+      originalFileName: file.name,
       fileSize: file.size,
-      uploadTime,
+      uploadTime: new Date().toISOString(),
     };
 
-    const metadataFilePath = join(jsonDir, `${originalFileName}.json`);
+    // Buat direktori kategori jika belum ada
+    const categoryDir = join(uploadDir, category);
+    await mkdir(categoryDir, { recursive: true });
+
+    // Simpan file ke direktori sesuai kategori
+    const filePath = join(categoryDir, file.name);
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    await writeFile(filePath, buffer);
+
+    // Simpan metadata ke file JSON
+    const metadataFilePath = join(jsonDir, `${file.name}.json`);
+    await mkdir(jsonDir, { recursive: true });
     await writeFile(metadataFilePath, JSON.stringify(metadata));
 
     return NextResponse.json({
       message: 'File uploaded successfully',
-      fileName: originalFileName,
+      fileName: file.name,
       ...metadata,
     });
   } catch (error) {
@@ -94,7 +137,7 @@ export async function GET(request: NextRequest) {
 
       if (stats.isFile()) {
         const metadataFilePath = join(jsonDir, `${file}.json`);
-        let metadata: Metadata = { name: '', semester: '', dosen: '', category: '', originalFileName: '', fileSize: 0, uploadTime: '' };
+        let metadata: Metadata = { name: '', category: '', originalFileName: '', fileSize: 0, uploadTime: '', dosen: '', semester: '' };
 
         try {
           const metadataFile = await readFile(metadataFilePath, 'utf-8');
@@ -106,16 +149,20 @@ export async function GET(request: NextRequest) {
         fileList.push({
           name: file,
           size: stats.size,
-          semester: metadata.semester || 'N/A',
-          dosen: metadata.dosen || 'N/A',
-          uploadTime: metadata.uploadTime || 'N/A',
-          path: `/api/downloadmateri?file=${encodeURIComponent(file)}`, 
+          semester: metadata.semester || '-',
+          dosen: metadata.dosen || '-',
+          uploadTime: metadata.uploadTime || '-',
+          path: `/api/downloadmateri?file=${encodeURIComponent(file)}&category=${encodeURIComponent(category)}`,
+          penerbit: metadata.penerbit || '-', // Menambahkan penerbit jika ada
+          tahunTerbit: metadata.tahunTerbit || '-', // Menambahkan tahun terbit jika ada
+          deskripsi: metadata.deskripsi || '-', // Menambahkan deskripsi jika ada
         });
       }
     }
 
     return NextResponse.json(fileList);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: 'Failed to read files from directory' }, { status: 500 });
   }
 }

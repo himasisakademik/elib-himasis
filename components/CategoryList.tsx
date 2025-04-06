@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaCopy, FaSortAmountDown, FaSortAmountUp, FaFileAlt, FaFilter, FaDownload } from 'react-icons/fa'; 
-import { AiOutlineInstagram, AiOutlineWhatsApp } from 'react-icons/ai'; 
+import { AiOutlineWhatsApp } from 'react-icons/ai'; 
 
 interface File {
   name: string;
   size: number;
-  semester: string;
-  dosen: string;
+  semester?: string;
+  dosen?: string;
   path: string;
   uploadTime: string;
+  penerbit?: string;   // Menambahkan penerbit
+  tahunTerbit?: string; // Menambahkan tahun terbit
+  deskripsi?: string;  // Menambahkan deskripsi singkat
 }
 
 interface CategoryListProps {
@@ -76,8 +79,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   const filteredFiles = sortedFiles.filter(file => {
     return (
       file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      file.dosen.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      file.semester.toLowerCase().includes(searchQuery.toLowerCase())
+      file.dosen?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.semester?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.penerbit?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.tahunTerbit?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.deskripsi?.toLowerCase().includes(searchQuery.toLowerCase()) // Search by Deskripsi
     );
   });
 
@@ -95,12 +101,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   const getShareUrl = (fileName: string) => {
     const fileUrl = `${window.location.origin}/api/downloadmateri?materi=${encodeURIComponent(fileName)}&category=${encodeURIComponent(filterCategory)}`;
     return {
-      whatsapp: `https://wa.me/?text=${encodeURIComponent("Hello Sobat Himasis! Silahkan dibaca dengan sebaik-baiknya Materi E-Library Himasis berikut : \n" + fileUrl + "\n\nThank You...\nSemoga Bermanfaat!")}`,
-      fileUrl: fileUrl, // ✅ Pastikan `fileUrl` ikut dikembalikan
+      whatsapp: `https://wa.me/?text=${encodeURIComponent("Hello Sobat! Silahkan dibaca materi berikut : \n" + fileUrl + "\n\nThank You...")}`,
+      fileUrl: fileUrl, 
     };
   };
-  
-  
+
   const handleCopyUrl = (fileUrl: string, fileName: string) => {
     navigator.clipboard.writeText(fileUrl);
     setCopiedFile(fileName);
@@ -110,17 +115,15 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
     }, 2000);
   };
 
-
   return (
     <div className="p-6">
-      <div className="p-6 relative">
       {/* Notifikasi Copy */}
       {copiedFile && (
         <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300 animate-fade-in">
           ✅ URL "{copiedFile}" berhasil disalin!
         </div>
       )}
-      <h2 className="text-4xl font-extrabold text-center mb-6 text-primary font-[--font-geist-sans]">Materi {filterCategory}</h2>
+      <h2 className="text-4xl font-extrabold text-center mb-6 text-primary">Materi {filterCategory}</h2>
 
       <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
         <div className="flex items-center space-x-2 w-full sm:w-auto">
@@ -128,11 +131,12 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           <select
             value={filterCategory}
             onChange={handleCategoryChange}
-            className="bg-gray-700 text-white p-2 rounded flex items-center font-[--font-geist-sans]"
+            className="bg-gray-700 text-white p-2 rounded flex items-center"
           >
             <option value="matkul">Mata Kuliah</option>
             <option value="jurnal">Jurnal</option>
             <option value="tugas-akhir">Tugas Akhir</option>
+            <option value="umum">Umum</option>
           </select>
         </div>
 
@@ -141,7 +145,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           <select
             value={sortBy}
             onChange={handleSortChange}
-            className="bg-gray-700 text-white p-2 rounded flex items-center font-[--font-geist-sans]"
+            className="bg-gray-700 text-white p-2 rounded flex items-center"
           >
             <option value="dateDesc">Newest First</option>
             <option value="dateAsc">Oldest First</option>
@@ -152,11 +156,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         </div>
 
         <div className="flex items-center space-x-2 w-full sm:w-auto">
-          <span className="text-primary font-[--font-geist-sans]">Show</span>
+          <span className="text-primary">Show</span>
           <select
             value={recordsPerPage}
             onChange={handleRecordsPerPageChange}
-            className="bg-gray-700 text-white p-2 rounded flex items-center font-[--font-geist-sans]"
+            className="bg-gray-700 text-white p-2 rounded"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>
@@ -164,7 +168,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
             <option value={75}>75</option>
             <option value={100}>100</option>
           </select>
-          <span className="text-primary font-[--font-geist-sans]">items</span>
+          <span className="text-primary">items</span>
         </div>
       </div>
 
@@ -173,8 +177,8 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
-          placeholder="Search by Materi, Dosen, or Semester"
-          className="bg-gray-700 text-white p-3 rounded-lg w-full sm:w-1/2 focus:outline-none focus:ring-2 focus:ring-primary transition-all font-[--font-geist-sans]"
+          placeholder="Search by Materi, Dosen, or Category"
+          className="bg-gray-700 text-white p-3 rounded-lg w-full sm:w-1/2 focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <button
           className="bg-primary text-white p-3 rounded-lg hover:bg-primary-dark transition-all"
@@ -184,55 +188,57 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         </button>
       </div>
 
-      {files.length === 0 && (
-        <div className="text-center text-lg text-gray-400">No materials uploaded yet for {filterCategory}.</div>
-      )}
-
       {filteredFiles.length === 0 && searchQuery && (
         <div className="text-center text-lg text-gray-400">Nothing found for your search.</div>
       )}
 
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedFiles.map((file, index) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {currentFiles.map((file, index) => {
           const { whatsapp, fileUrl } = getShareUrl(file.name);
           return (
             <div
               key={index}
-              className="bg-gray-800 p-6 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="bg-gray-800 p-6 rounded-lg shadow-xl hover:shadow-2xl"
             >
               <div className="flex items-center mb-4">
                 <FaFileAlt className="text-3xl text-primary" />
                 <div className="ml-4">
                   <p className="font-semibold text-xl text-white">{file.name}</p>
-                  <p className="text-sm text-gray-400">{(file.size / 1024).toFixed(2)} KB</p>
-                  <p className="text-sm text-gray-400">Semester: {file.semester}</p>
-                  <p className="text-sm text-gray-400">Dosen: {file.dosen}</p>
+                  <p className="text-sm text-gray-400">Size: {(file.size / 1024).toFixed(2)} KB</p>
+                  {filterCategory === "umum" && (
+                    <>
+                      <p className="text-sm text-gray-400">Penerbit: {file.penerbit || 'N/A'}</p>
+                      <p className="text-sm text-gray-400">Tahun Terbit: {file.tahunTerbit || 'N/A'}</p>
+                      <p className="text-sm text-gray-400">Deskripsi: {file.deskripsi || 'N/A'}</p>
+                    </>
+                  )}
+                  {filterCategory !== "umum" && (
+                    <>
+                      <p className="text-sm text-gray-400">Semester: {file.semester || 'N/A'}</p>
+                      <p className="text-sm text-gray-400">Dosen: {file.dosen || 'N/A'}</p>
+                    </>
+                  )}
                   <p className="text-sm text-gray-400">Uploaded: {new Date(file.uploadTime).toLocaleString()}</p>
                 </div>
               </div>
 
               <div className="flex justify-between items-center">
-                {/* Bagian Share */}
                 <div className="flex space-x-3">
                   <a href={whatsapp} target="_blank" className="text-green-500 hover:text-green-700">
                     <AiOutlineWhatsApp className="text-2xl" />
                   </a>
                 </div>
-
-                {/* Bagian Copy & Download */}
                 <div className="flex space-x-3">
-                  {/* Ikon Copy */}
                   <button
                     onClick={() => handleCopyUrl(fileUrl, file.name)}
-                    className="text-yellow-500 hover:text-yellow-700 flex items-center space-x-2 transition-transform transform hover:scale-110"
+                    className="text-yellow-500 hover:text-yellow-700"
                   >
                     <FaCopy className="text-lg" />
                   </button>
 
-                  {/* Ikon Download */}
                   <a
                     href={fileUrl}
-                    className="text-blue-500 hover:text-blue-700 flex items-center space-x-2 transition-transform transform hover:scale-110"
+                    className="text-blue-500 hover:text-blue-700"
                     download
                   >
                     <FaDownload className="text-lg" />
@@ -243,14 +249,13 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           );
         })}
       </div>
-      </div>
 
       <div className="flex justify-center mt-6 space-x-2">
         {pageNumbers.map((number) => (
           <button
             key={number}
             onClick={() => paginate(number)}
-            className={`px-4 py-2 rounded-lg ${currentPage === number ? 'bg-primary text-white' : 'bg-gray-700 text-gray-300'} hover:bg-primary hover:text-white transition-all`}
+            className={`px-4 py-2 rounded-lg ${currentPage === number ? 'bg-primary text-white' : 'bg-gray-700 text-gray-300'}`}
           >
             {number}
           </button>

@@ -28,6 +28,9 @@ const Footer = () => {
             <Link href="/library/search/tugas-akhir" className="text-sm text-gray-400 hover:text-primary transition-colors font-[--font-geist-sans]">
               Tugas Akhir
             </Link>
+            <Link href="/library/search/umum" className="text-sm text-gray-400 hover:text-primary transition-colors font-[--font-geist-sans]">
+              Umum
+            </Link>
           </div>
 
           <div className="mb-30 flex flex-wrap space-x-6 mt-4 justify-between items-center md:w-auto">

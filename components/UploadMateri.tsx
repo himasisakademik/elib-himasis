@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FiUpload } from "react-icons/fi";
-import { LogOut } from "lucide-react"; // Menggunakan ikon logout modern
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import Header from "@/components/Header";
@@ -17,6 +17,9 @@ const UploadMateri = ({ session }: { session: any }) => {
   const [semester, setSemester] = useState("");
   const [dosen, setDosen] = useState("");
   const [category, setCategory] = useState("matkul");
+  const [penerbit, setPenerbit] = useState("");
+  const [tahunTerbit, setTahunTerbit] = useState("");
+  const [deskripsi, setDeskripsi] = useState("");
 
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -44,11 +47,21 @@ const UploadMateri = ({ session }: { session: any }) => {
     }
 
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("semester", semester);
-    formData.append("dosen", dosen);
-    formData.append("category", category);
     formData.append("file", file);
+    formData.append("category", category);
+
+    // Form untuk kategori umum
+    if (category === "umum") {
+      formData.append("name", name);
+      formData.append("penerbit", penerbit);
+      formData.append("tahun_terbit", tahunTerbit);
+      formData.append("deskripsi", deskripsi);
+    } else {
+      // Form untuk kategori selain umum
+      formData.append("name", name);
+      formData.append("semester", semester);
+      formData.append("dosen", dosen);
+    }
 
     const response = await fetch("/api/uploadmateri", {
       method: "POST",
@@ -69,6 +82,9 @@ const UploadMateri = ({ session }: { session: any }) => {
       setSemester("");
       setDosen("");
       setCategory("matkul");
+      setPenerbit("");
+      setTahunTerbit("");
+      setDeskripsi("");
     } else {
       Swal.fire({
         icon: "error",
@@ -101,7 +117,6 @@ const UploadMateri = ({ session }: { session: any }) => {
               </h3>
             </div>
             
-            {/* Tombol Logout dengan Icon & Efek Hover */}
             <button
               onClick={() => signOut()}
               className="p-3 bg-transparent text-white rounded-full hover:bg-red-600 hover:scale-110 transition-all duration-300"
@@ -111,6 +126,7 @@ const UploadMateri = ({ session }: { session: any }) => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Nama Materi (Selalu tampil) */}
             <input
               type="text"
               name="name"
@@ -119,22 +135,8 @@ const UploadMateri = ({ session }: { session: any }) => {
               placeholder="Nama Materi"
               className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <input
-              type="text"
-              name="semester"
-              value={semester}
-              onChange={(e) => setSemester(e.target.value)}
-              placeholder="Semester"
-              className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="text"
-              name="dosen"
-              value={dosen}
-              onChange={(e) => setDosen(e.target.value)}
-              placeholder="Nama Dosen"
-              className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+
+            {/* Kategori Pilihan */}
             <select
               name="category"
               value={category}
@@ -144,8 +146,62 @@ const UploadMateri = ({ session }: { session: any }) => {
               <option value="matkul">Mata Kuliah</option>
               <option value="jurnal">Jurnal</option>
               <option value="tugas-akhir">Tugas Akhir</option>
+              <option value="umum">Umum</option>
             </select>
 
+            {/* Form untuk kategori selain umum */}
+            {category !== "umum" && (
+              <>
+                <input
+                  type="text"
+                  name="semester"
+                  value={semester}
+                  onChange={(e) => setSemester(e.target.value)}
+                  placeholder="Semester"
+                  className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                  type="text"
+                  name="dosen"
+                  value={dosen}
+                  onChange={(e) => setDosen(e.target.value)}
+                  placeholder="Nama Dosen"
+                  className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </>
+            )}
+
+            {/* Form untuk kategori umum */}
+            {category === "umum" && (
+              <>
+                <input
+                  type="text"
+                  name="penerbit"
+                  value={penerbit}
+                  onChange={(e) => setPenerbit(e.target.value)}
+                  placeholder="Penerbit"
+                  className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                  type="text"
+                  name="tahunTerbit"
+                  value={tahunTerbit}
+                  onChange={(e) => setTahunTerbit(e.target.value)}
+                  placeholder="Tahun Terbit"
+                  className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <textarea
+                  name="deskripsi"
+                  value={deskripsi}
+                  onChange={(e) => setDeskripsi(e.target.value)}
+                  placeholder="Deskripsi Singkat (max 50 karakter)"
+                  maxLength={50}
+                  className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </>
+            )}
+
+            {/* File upload */}
             <div
               {...getRootProps()}
               className="w-full p-4 border border-gray-500 rounded-lg bg-gray-700 text-white cursor-pointer flex items-center justify-center"

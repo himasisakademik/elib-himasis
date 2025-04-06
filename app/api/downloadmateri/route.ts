@@ -13,18 +13,18 @@ export async function GET(request: NextRequest) {
   }
 
   const filePath = join(uploadDir, category, fileName);
+  const metadataFilePath = join(uploadDir, 'json', `${fileName}.json`);
 
   try {
-    // Cek apakah file ada
     await fs.access(filePath);
-
-    // Baca file sebagai buffer
     const fileBuffer = await fs.readFile(filePath);
+    const metadata = await fs.readFile(metadataFilePath, 'utf-8');
 
     return new NextResponse(fileBuffer, {
       headers: {
         'Content-Disposition': `attachment; filename="${fileName}"`,
         'Content-Type': 'application/octet-stream',
+        'Metadata': metadata, // Menambahkan metadata file
       },
     });
   } catch (error) {

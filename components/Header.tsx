@@ -24,6 +24,7 @@ const Header = () => {
           <Link href="/library/search/matkul" className="hover:text-blue-400 font-[--font-geist-sans]">Mata Kuliah</Link>
           <Link href="/library/search/jurnal" className="hover:text-blue-400 font-[--font-geist-sans]">Jurnal</Link>
           <Link href="/library/search/tugas-akhir" className="hover:text-blue-400 font-[--font-geist-sans]">Tugas Akhir</Link>
+          <Link href="/library/search/umum" className="hover:text-blue-400 font-[--font-geist-sans]">Umum</Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -45,6 +46,7 @@ const Header = () => {
           <Link href="/library/search/matkul" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Mata Kuliah</Link>
           <Link href="/library/search/jurnal" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Jurnal</Link>
           <Link href="/library/search/tugas-akhir" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Tugas Akhir</Link>
+          <Link href="/library/search/umum" className="py-2 hover:bg-gray-700 rounded-md font-[--font-geist-sans]" onClick={toggleMenu}>Umum</Link>
         </nav>
       </div>
     </header>
