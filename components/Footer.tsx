@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link'; 
-import { FaTwitter, FaWhatsapp, FaInstagram, FaYoutube, FaTiktok } from 'react-icons/fa'; 
+import { FaTwitter, FaFacebook, FaInstagram, FaYoutube, FaTiktok, FaSpotify } from 'react-icons/fa'; 
 
 const Footer = () => {
   return (
@@ -35,39 +35,46 @@ const Footer = () => {
 
           <div className="mb-30 flex flex-wrap space-x-6 mt-4 justify-between items-center md:w-auto">
             <a
-              href="https://twitter.com"
+              href="https://x.com/himasis_stmi?t=K1Gn17jjkm8VtfHCLH53Qw&s=09"
               target="_blank"
               className="text-gray-400 hover:text-primary transition-colors"
             >
               <FaTwitter className="text-xl" />
             </a>
             <a
-              href="https://wa.me"
+              href="https://www.facebook.com/share/1ALjti5EsX/"
               target="_blank"
               className="text-gray-400 hover:text-primary transition-colors"
             >
-              <FaWhatsapp className="text-xl" />
+              <FaFacebook className="text-xl" />
             </a>
             <a
-              href="https://www.instagram.com"
+              href="https://www.instagram.com/himasis.poltekstmi?igsh=eWV2ZGIwbXo3b294"
               target="_blank"
               className="text-gray-400 hover:text-primary transition-colors"
             >
               <FaInstagram className="text-xl" />
             </a>
             <a
-              href="https://www.youtube.com"
+              href="https://youtube.com/@himasis?si=KgqAFCt6tLWudTd2"
               target="_blank"
               className="text-gray-400 hover:text-primary transition-colors"
             >
               <FaYoutube className="text-xl" />
             </a>
             <a
-              href="https://www.tiktok.com"
+              href="https://www.tiktok.com/@himasis.poltekstmi"
               target="_blank"
               className="text-gray-400 hover:text-primary transition-colors"
             >
               <FaTiktok className="text-xl" />
+            </a>
+            <a
+              href="https://open.spotify.com/show/0lS1dBg7hpyo1wTVCiikxa?si=sa5QhNBcT26s8v15MKH7YQ"
+              target="_blank"
+              className="text-gray-400 hover:text-primary transition-colors"
+            >
+              <FaSpotify className="text-xl" />
             </a>
           </div>
         </div>

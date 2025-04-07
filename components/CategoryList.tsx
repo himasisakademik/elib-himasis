@@ -177,7 +177,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
-          placeholder="Search by Materi, Semester, Dosen, Penerbit, Tahun Terbit"
+          placeholder="Mau Baca Apa Hari Ini ?"
           className="bg-gray-700 text-white p-3 rounded-lg w-full sm:w-1/2 focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <button

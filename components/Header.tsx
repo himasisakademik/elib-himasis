@@ -15,7 +15,7 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center space-x-2">
           <Image src="/himasis.png" alt="Logo" width={50} height={50} />
-          <h1 className="text-xl font-bold font-[--font-geist-sans]">E-Library Himasis</h1>
+          <h1 className="text-xl font-bold font-[--font-geist-sans]">SiVerse Himasis</h1>
         </div>
 
         {/* Navigation for Large Screens */}

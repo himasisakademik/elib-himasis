@@ -9,9 +9,9 @@ import { motion } from "framer-motion";
 import Logo from "../public/akademik_home.png";
 
 const textArray = [
-  "E Library adalah media platform pembelajaran berbasis digital. Dirancang untuk membantu mahasiswa dalam mengakses referensi akademik dengan mudah.",
-  "Temukan berbagai buku, jurnal, dan materi kuliah di E Library. Belajar jadi lebih efisien dengan akses tanpa batas.",
-  "Dengan E Library, belajar kapan saja dan di mana saja jadi lebih fleksibel. Dapatkan sumber belajar terbaik untuk menunjang akademik Anda.",
+  "Si Verse adalah media platform pembelajaran berbasis digital. Dirancang untuk membantu mahasiswa dalam mengakses referensi akademik dengan mudah.",
+  "Temukan berbagai buku, jurnal, dan materi kuliah di Si Verse. Belajar jadi lebih efisien dengan akses tanpa batas.",
+  "Dengan Si Verse, belajar kapan saja dan di mana saja jadi lebih fleksibel. Dapatkan sumber belajar terbaik untuk menunjang akademik Anda.",
 ];
 
 const HomePage = () => {
@@ -45,7 +45,7 @@ const HomePage = () => {
         {/* Bagian Kiri: Judul, Deskripsi, Button */}
         <div className="text-center md:text-left space-y-6">
           <h1 className="mt-35 text-6xl font-extrabold leading-tight tracking-wide font-[--font-geist-sans]">
-            E - Library
+            SiVerse
           </h1>
 
           {/* Animasi teks dengan Framer Motion */}
@@ -67,7 +67,7 @@ const HomePage = () => {
             onClick={() => router.push("/library/search/matkul")}
             className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white text-lg font-semibold px-10 py-5 rounded-xl shadow-lg transition-all hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500 font-[--font-geist-sans]"
           >
-            Mulai
+            Yuk Baca
           </motion.button>
         </div>
 
