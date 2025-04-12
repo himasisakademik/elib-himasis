@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir, readdir, readFile } from 'fs/promises';
+import { writeFile, mkdir, readdir, readFile, rename } from 'fs/promises';
 import { join } from 'path';
 import fs from 'fs';
 
@@ -117,6 +117,62 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+// Handle PUT request to update the file
+export async function PUT(request: NextRequest) {
+  const { fileName, ...updatedData } = await request.json();
+
+  const oldFilePath = join(uploadDir, updatedData.category, fileName);
+  const newFilePath = join(uploadDir, updatedData.category, updatedData.name); // Updated file name
+
+  const metadataFilePath = join(jsonDir, `${fileName}.json`);
+  const newMetadataFilePath = join(jsonDir, `${updatedData.name}.json`);
+
+  try {
+    // Rename the file in the directory
+    await rename(oldFilePath, newFilePath);
+
+    // Update the metadata file with the new name
+    const metadata = { ...updatedData, originalFileName: updatedData.name }; // Include the new file name in metadata
+    await writeFile(newMetadataFilePath, JSON.stringify(metadata));
+
+    // Delete the old metadata file
+    await fs.promises.unlink(metadataFilePath);
+
+    return NextResponse.json({ message: 'File and metadata updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to update file and metadata' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const { file, category } = await request.json();
+  
+  if (!file || !category) {
+    return NextResponse.json({ error: 'Missing file or category parameter' }, { status: 400 });
+  }
+
+  try {
+    // Delete the file from the category directory
+    const filePath = join(uploadDir, category, file);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath); // Delete the file
+    }
+
+    // Delete the metadata from the JSON directory
+    const metadataFilePath = join(jsonDir, `${file}.json`);
+    if (fs.existsSync(metadataFilePath)) {
+      fs.unlinkSync(metadataFilePath); // Delete the metadata
+    }
+
+    return NextResponse.json({ message: 'File deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to delete the file' }, { status: 500 });
+  }
+}
+
 
 export async function GET(request: NextRequest) {
   const category = request.nextUrl.searchParams.get('category');
