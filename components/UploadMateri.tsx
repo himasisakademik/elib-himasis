@@ -155,15 +155,6 @@ const UploadMateri = ({ session }: { session: any }) => {
     };
   };
 
-  const handleCopyUrl = (fileUrl: string) => {
-    navigator.clipboard.writeText(fileUrl);
-    Swal.fire({
-      icon: 'success',
-      title: 'URL copied!',
-      text: 'The URL for the file has been copied to your clipboard.',
-    });
-  };
-
   // Format date to Asia/Jakarta timezone
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -234,74 +225,74 @@ const UploadMateri = ({ session }: { session: any }) => {
   }
 
   const handleUpdateFile = (file: any) => {
-    Swal.fire({
-      title: 'Update Materi',
-      html: `
-        <div class="swal2-input-label text-white">Nama Materi (jangan ubah ext file)</div>
-        <input id="name" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500" value="${file.name}" />
-        
-        ${category !== 'umum' ? `
-        <div class="swal2-input-label text-white">Semester</div>
-        <input id="semester" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500" value="${file.semester || ''}" />
-        
-        <div class="swal2-input-label text-white">Nama Dosen</div>
-        <input id="dosen" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500" value="${file.dosen || ''}" />
-        ` : `
-        <div class="swal2-input-label text-white">Penerbit</div>
-        <input id="penerbit" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500" value="${file.penerbit || ''}" />
-        
-        <div class="swal2-input-label text-white">Tahun Terbit</div>
-        <input id="tahunTerbit" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500" value="${file.tahunTerbit || ''}" />
-        
-        <div class="swal2-input-label text-white">Deskripsi</div>
-        <textarea id="deskripsi" class="swal2-textarea bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500">${file.deskripsi || ''}</textarea>
-        `}
-      `,
-      showCancelButton: true,
-      confirmButtonText: 'Update',
-      cancelButtonText: 'Cancel',
-      customClass: {
-        popup: 'bg-gray-900 text-white rounded-lg p-8 shadow-lg', // Dark background and padding
-        title: 'text-2xl font-semibold mb-6', // Larger, bolder title
-        content: 'text-base mb-4', // Content text
-        confirmButton: 'bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition-colors duration-200', // Tailwind for button styles
-        cancelButton: 'bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-500 transition-colors duration-200', // Cancel button style
-        input: 'bg-gray-800 text-white border-gray-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500', // Input field styles
-        textarea: 'bg-gray-800 text-white border-gray-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500', // Textarea styles
-      },
-      background: '#1A202C', // Dark background color for the modal
-      preConfirm: () => {
-        const updatedFile = {
-          name: (document.getElementById('name') as HTMLInputElement).value,
-          category,
-          semester: category !== 'umum' ? (document.getElementById('semester') as HTMLInputElement).value : undefined,
-          dosen: category !== 'umum' ? (document.getElementById('dosen') as HTMLInputElement).value : undefined,
-          penerbit: category === 'umum' ? (document.getElementById('penerbit') as HTMLInputElement).value : undefined,
-          tahunTerbit: category === 'umum' ? (document.getElementById('tahunTerbit') as HTMLInputElement).value : undefined,
-          deskripsi: category === 'umum' ? (document.getElementById('deskripsi') as HTMLTextAreaElement).value : undefined,
-          uploadTime: new Date().toISOString()  // Add the current time as the uploadTime
-        };
-        return updatedFile;
-      }
-    }).then((result: SweetAlertResult) => {
-      if (result.isConfirmed) {
-        const updatedFile = result.value;
-  
-        // Send updated data to backend here
-        fetch("/api/uploadmateri", {
-          method: "PUT",
-          body: JSON.stringify({ ...updatedFile, fileName: file.name }),
-          headers: { 'Content-Type': 'application/json' },
-        })
-        .then(response => response.json())
-        .then(() => {
-          Swal.fire('Updated!', 'The file details have been updated.', 'success');
-          fetchFiles(); // Re-fetch files after update
-        })
-        .catch(() => Swal.fire('Error!', 'There was an error updating the file.', 'error'));
-      }
-    });
-  };
+  Swal.fire({
+    title: 'Update Materi',
+    html: `
+      <div class="swal2-input-label text-white">Nama Materi (jangan ubah ext file)</div>
+      <input id="name" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto rounded-md py-2 px-4" value="${file.name}" />
+      
+      ${category !== 'umum' ? `
+      <div class="swal2-input-label text-white">Semester</div>
+      <input id="semester" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto rounded-md py-2 px-4" value="${file.semester || ''}" />
+      
+      <div class="swal2-input-label text-white">Nama Dosen</div>
+      <input id="dosen" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto rounded-md py-2 px-4" value="${file.dosen || ''}" />
+      ` : `
+      <div class="swal2-input-label text-white">Penerbit</div>
+      <input id="penerbit" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto rounded-md py-2 px-4" value="${file.penerbit || ''}" />
+      
+      <div class="swal2-input-label text-white">Tahun Terbit</div>
+      <input id="tahunTerbit" class="swal2-input bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto rounded-md py-2 px-4" value="${file.tahunTerbit || ''}" />
+      
+      <div class="swal2-input-label text-white">Deskripsi</div>
+      <textarea id="deskripsi" class="swal2-textarea bg-gray-800 text-white border-gray-600 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto rounded-md py-2 px-4">${file.deskripsi || ''}</textarea>
+      `}
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Update',
+    cancelButtonText: 'Cancel',
+    customClass: {
+      popup: 'bg-gray-900 text-white rounded-xl p-8 shadow-2xl w-full sm:w-96', // Dark background with rounded corners and shadow for elegant look
+      title: 'text-3xl font-semibold mb-4', // Larger, bold title with spacing
+      content: 'text-base mb-4', // Content text styling
+      confirmButton: 'bg-blue-600 text-white py-2 px-6 rounded-full hover:bg-blue-500 transition-all duration-300 w-full sm:w-auto', // Full-width button on mobile
+      cancelButton: 'bg-gray-600 text-white py-2 px-6 rounded-full hover:bg-gray-500 transition-all duration-300 w-full sm:w-auto', // Full-width cancel button on mobile
+      input: 'bg-gray-800 text-white border-gray-600 rounded-md py-2 px-4 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto', // Input fields with padding and rounded corners
+      textarea: 'bg-gray-800 text-white border-gray-600 rounded-md py-2 px-4 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto', // Textarea fields with padding and rounded corners
+    },
+    background: '#1A202C', // Dark background color for the modal
+    preConfirm: () => {
+      const updatedFile = {
+        name: (document.getElementById('name') as HTMLInputElement).value,
+        category,
+        semester: category !== 'umum' ? (document.getElementById('semester') as HTMLInputElement).value : undefined,
+        dosen: category !== 'umum' ? (document.getElementById('dosen') as HTMLInputElement).value : undefined,
+        penerbit: category === 'umum' ? (document.getElementById('penerbit') as HTMLInputElement).value : undefined,
+        tahunTerbit: category === 'umum' ? (document.getElementById('tahunTerbit') as HTMLInputElement).value : undefined,
+        deskripsi: category === 'umum' ? (document.getElementById('deskripsi') as HTMLTextAreaElement).value : undefined,
+        uploadTime: new Date().toISOString()  // Add the current time as the uploadTime
+      };
+      return updatedFile;
+    }
+  }).then((result: SweetAlertResult) => {
+    if (result.isConfirmed) {
+      const updatedFile = result.value;
+
+      // Send updated data to backend here
+      fetch("/api/uploadmateri", {
+        method: "PUT",
+        body: JSON.stringify({ ...updatedFile, fileName: file.name }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(response => response.json())
+      .then(() => {
+        Swal.fire('Updated!', 'The file details have been updated.', 'success');
+        fetchFiles(); // Re-fetch files after update
+      })
+      .catch(() => Swal.fire('Error!', 'There was an error updating the file.', 'error'));
+    }
+  });
+};
   
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -473,12 +464,6 @@ const UploadMateri = ({ session }: { session: any }) => {
                     <a href={file.path} className="text-blue-500 hover:text-blue-700" download>
                       <FaDownload />
                     </a>
-                    <button
-                      onClick={() => handleCopyUrl(file.path)}
-                      className="text-yellow-500 hover:text-yellow-700"
-                    >
-                      <FaCopy />
-                    </button>
                     <button
                       onClick={() => deleteFile(file.name)}
                       className="text-red-500 hover:text-red-700"
