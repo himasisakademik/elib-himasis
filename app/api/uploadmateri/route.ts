@@ -118,6 +118,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
+<<<<<<< HEAD
 export async function PUT(request: NextRequest) {
   const { fileName, ...updatedData } = await request.json();
 
@@ -172,6 +173,30 @@ export async function PUT(request: NextRequest) {
       message: 'File and metadata updated successfully',
       uploadTime: preservedUploadTime // Return the preserved time
     });
+=======
+// Handle PUT request to update the file
+export async function PUT(request: NextRequest) {
+  const { fileName, ...updatedData } = await request.json();
+
+  const oldFilePath = join(uploadDir, updatedData.category, fileName);
+  const newFilePath = join(uploadDir, updatedData.category, updatedData.name); // Updated file name
+
+  const metadataFilePath = join(jsonDir, `${fileName}.json`);
+  const newMetadataFilePath = join(jsonDir, `${updatedData.name}.json`);
+
+  try {
+    // Rename the file in the directory
+    await rename(oldFilePath, newFilePath);
+
+    // Update the metadata file with the new name
+    const metadata = { ...updatedData, originalFileName: updatedData.name }; // Include the new file name in metadata
+    await writeFile(newMetadataFilePath, JSON.stringify(metadata));
+
+    // Delete the old metadata file
+    await fs.promises.unlink(metadataFilePath);
+
+    return NextResponse.json({ message: 'File and metadata updated successfully' });
+>>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to update file and metadata' }, { status: 500 });

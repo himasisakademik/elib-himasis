@@ -26,15 +26,26 @@ const Page = () => {
     };
   }, []);
 
+<<<<<<< HEAD
   const category = "matkul";  
 
   return (
     <div className="bg-gray-900 text-white">
+=======
+  const category = "terbaru";  
+
+  return (
+    <div className="bg-gray-900 text-white min-h-screen w-full overflow-x-hidden">
+>>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
       {/* Header tetap di atas */}
       <Header />
 
       {/* Wrapper untuk mengatasi AOS overlap */}
+<<<<<<< HEAD
       <div className="bg-gray-900 text-white">
+=======
+      <div className="w-full">
+>>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
 
         {/* HomePage Section */}
         <HomePage /> 
