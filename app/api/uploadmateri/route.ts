@@ -5,15 +5,24 @@ import fs from 'fs';
 
 interface Metadata {
   name: string;
+  mataKuliah?: string;
   semester?: string;
   dosen?: string;
   category: string;
   originalFileName: string;
   fileSize: number;
   uploadTime: string;
-  penerbit?: string;  // Menambahkan penerbit untuk kategori umum
-  tahunTerbit?: string;  // Menambahkan tahun terbit untuk kategori umum
-  deskripsi?: string;  // Menambahkan deskripsi untuk kategori umum
+  penerbit?: string;  
+  tahunTerbit?: string;  
+  deskripsi?: string;  
+  judulJurnal?: string;
+  penulisJurnal?: string;
+  penerbitJurnal?: string;
+  tahunJurnal?: string;
+  asalJurnal?: string;
+  judulTA?: string;
+  namaTA?: string;
+  tahunTA?: string;
 }
 
 const uploadDir = join(process.cwd(), 'uploads/e-lib');
@@ -30,6 +39,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const name = formData.get('name') as string;
+    const mataKuliah = formData.get('mataKuliah') as string;
     const semester = formData.get('semester') as string;
     const dosen = formData.get('dosen') as string;
     const category = formData.get('category') as string;
@@ -38,7 +48,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Menangani kategori umum
     if (category === "umum") {
       const penerbit = formData.get('penerbit') as string;
       const tahunTerbit = formData.get('tahun_terbit') as string;
@@ -59,17 +68,14 @@ export async function POST(request: NextRequest) {
         deskripsi,
       };
 
-      // Buat direktori kategori jika belum ada
       const categoryDir = join(uploadDir, category);
       await mkdir(categoryDir, { recursive: true });
 
-      // Simpan file ke direktori sesuai kategori
       const filePath = join(categoryDir, file.name);
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       await writeFile(filePath, buffer);
 
-      // Simpan metadata ke file JSON
       const metadataFilePath = join(jsonDir, `${file.name}.json`);
       await mkdir(jsonDir, { recursive: true });
       await writeFile(metadataFilePath, JSON.stringify(metadata));
@@ -79,11 +85,89 @@ export async function POST(request: NextRequest) {
         fileName: file.name,
         ...metadata,
       });
-    }
+    } else if (category === "jurnal") {
+      const judulJurnal = formData.get('juduljurnal') as string;
+      const penulisJurnal = formData.get('penulisjurnal') as string;
+      const penerbitJurnal = formData.get('penerbitjurnal') as string;
+      const tahunJurnal = formData.get('tahunjurnal') as string;
+      const asalJurnal = formData.get('asaljurnal') as string;
 
-    // Menangani kategori selain "umum"
+      if (!judulJurnal || !penulisJurnal || !penerbitJurnal || !tahunJurnal || !asalJurnal) {
+        return NextResponse.json({ error: 'Missing required fields for "umum" category' }, { status: 400 });
+      }
+
+      const metadata: Metadata = {
+        name,
+        category,
+        originalFileName: file.name,
+        fileSize: file.size,
+        uploadTime: new Date().toISOString(),
+        judulJurnal,
+        penulisJurnal,
+        penerbitJurnal,
+        tahunJurnal,
+        asalJurnal,
+      };
+
+      const categoryDir = join(uploadDir, category);
+      await mkdir(categoryDir, { recursive: true });
+
+      const filePath = join(categoryDir, file.name);
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      await writeFile(filePath, buffer);
+
+      const metadataFilePath = join(jsonDir, `${file.name}.json`);
+      await mkdir(jsonDir, { recursive: true });
+      await writeFile(metadataFilePath, JSON.stringify(metadata));
+
+      return NextResponse.json({
+        message: 'File uploaded successfully',
+        fileName: file.name,
+        ...metadata,
+      });
+    } else if (category === "tugas-akhir") {
+      const judulTA = formData.get('judulta') as string;
+      const namaTA = formData.get('namata') as string;
+      const tahunTA = formData.get('tahunta') as string;
+
+      if (!judulTA || !namaTA || !tahunTA) {
+        return NextResponse.json({ error: 'Missing required fields for "umum" category' }, { status: 400 });
+      }
+
+      const metadata: Metadata = {
+        name,
+        category,
+        originalFileName: file.name,
+        fileSize: file.size,
+        uploadTime: new Date().toISOString(),
+        judulTA,
+        namaTA,
+        tahunTA,
+      };
+
+      const categoryDir = join(uploadDir, category);
+      await mkdir(categoryDir, { recursive: true });
+
+      const filePath = join(categoryDir, file.name);
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      await writeFile(filePath, buffer);
+
+      const metadataFilePath = join(jsonDir, `${file.name}.json`);
+      await mkdir(jsonDir, { recursive: true });
+      await writeFile(metadataFilePath, JSON.stringify(metadata));
+
+      return NextResponse.json({
+        message: 'File uploaded successfully',
+        fileName: file.name,
+        ...metadata,
+      });
+    } 
+
     const metadata: Metadata = {
       name,
+      mataKuliah,
       semester,
       dosen,
       category,
@@ -92,17 +176,14 @@ export async function POST(request: NextRequest) {
       uploadTime: new Date().toISOString(),
     };
 
-    // Buat direktori kategori jika belum ada
     const categoryDir = join(uploadDir, category);
     await mkdir(categoryDir, { recursive: true });
 
-    // Simpan file ke direktori sesuai kategori
     const filePath = join(categoryDir, file.name);
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
-    // Simpan metadata ke file JSON
     const metadataFilePath = join(jsonDir, `${file.name}.json`);
     await mkdir(jsonDir, { recursive: true });
     await writeFile(metadataFilePath, JSON.stringify(metadata));
@@ -118,12 +199,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-<<<<<<< HEAD
 export async function PUT(request: NextRequest) {
   const { fileName, ...updatedData } = await request.json();
 
   try {
-    // First, load the existing metadata to preserve the original uploadTime
     const existingMetadataPath = join(jsonDir, `${fileName}.json`);
     let existingMetadata = {};
     
@@ -132,71 +211,39 @@ export async function PUT(request: NextRequest) {
       existingMetadata = JSON.parse(metadataContent);
     } catch (error) {
       console.error("Error reading existing metadata:", error);
-      // Continue with update even if we can't get existing metadata
     }
 
     const oldFilePath = join(uploadDir, updatedData.category, fileName);
-    const newFilePath = join(uploadDir, updatedData.category, updatedData.name); // Updated file name
+    const newFilePath = join(uploadDir, updatedData.category, updatedData.name); 
 
     const metadataFilePath = join(jsonDir, `${fileName}.json`);
     const newMetadataFilePath = join(jsonDir, `${updatedData.name}.json`);
 
-    // Preserve the original uploadTime if it exists
     const preservedUploadTime = updatedData.uploadTime || 
                                (existingMetadata as any).uploadTime || 
                                new Date().toISOString();
     
-    // Create final metadata object with preserved uploadTime
     const metadata = { 
       ...updatedData, 
       originalFileName: updatedData.name,
       uploadTime: preservedUploadTime
     };
 
-    // Only rename the file if the name has changed
     if (fileName !== updatedData.name) {
       await rename(oldFilePath, newFilePath);
     } else {
-      // If the name hasn't changed, we don't need to rename
-      // This prevents file system errors
     }
 
-    // Update metadata file
     await writeFile(newMetadataFilePath, JSON.stringify(metadata));
 
-    // Delete old metadata file only if the name has changed
     if (fileName !== updatedData.name && fs.existsSync(metadataFilePath)) {
       await fs.promises.unlink(metadataFilePath);
     }
 
     return NextResponse.json({ 
       message: 'File and metadata updated successfully',
-      uploadTime: preservedUploadTime // Return the preserved time
+      uploadTime: preservedUploadTime 
     });
-=======
-// Handle PUT request to update the file
-export async function PUT(request: NextRequest) {
-  const { fileName, ...updatedData } = await request.json();
-
-  const oldFilePath = join(uploadDir, updatedData.category, fileName);
-  const newFilePath = join(uploadDir, updatedData.category, updatedData.name); // Updated file name
-
-  const metadataFilePath = join(jsonDir, `${fileName}.json`);
-  const newMetadataFilePath = join(jsonDir, `${updatedData.name}.json`);
-
-  try {
-    // Rename the file in the directory
-    await rename(oldFilePath, newFilePath);
-
-    // Update the metadata file with the new name
-    const metadata = { ...updatedData, originalFileName: updatedData.name }; // Include the new file name in metadata
-    await writeFile(newMetadataFilePath, JSON.stringify(metadata));
-
-    // Delete the old metadata file
-    await fs.promises.unlink(metadataFilePath);
-
-    return NextResponse.json({ message: 'File and metadata updated successfully' });
->>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to update file and metadata' }, { status: 500 });
@@ -211,16 +258,14 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    // Delete the file from the category directory
     const filePath = join(uploadDir, category, file);
     if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath); // Delete the file
+      fs.unlinkSync(filePath);
     }
 
-    // Delete the metadata from the JSON directory
     const metadataFilePath = join(jsonDir, `${file}.json`);
     if (fs.existsSync(metadataFilePath)) {
-      fs.unlinkSync(metadataFilePath); // Delete the metadata
+      fs.unlinkSync(metadataFilePath); 
     }
 
     return NextResponse.json({ message: 'File deleted successfully' });
@@ -250,7 +295,7 @@ export async function GET(request: NextRequest) {
 
       if (stats.isFile()) {
         const metadataFilePath = join(jsonDir, `${file}.json`);
-        let metadata: Metadata = { name: '', category: '', originalFileName: '', fileSize: 0, uploadTime: '', dosen: '', semester: '' };
+        let metadata: Metadata = { name: '', mataKuliah: '', category: '', originalFileName: '', fileSize: 0, uploadTime: '', dosen: '', semester: '' };
 
         try {
           const metadataFile = await readFile(metadataFilePath, 'utf-8');
@@ -261,14 +306,23 @@ export async function GET(request: NextRequest) {
 
         fileList.push({
           name: file,
+          mataKuliah: metadata.mataKuliah || '-',
           size: stats.size,
           semester: metadata.semester || '-',
           dosen: metadata.dosen || '-',
           uploadTime: metadata.uploadTime || '-',
           path: `/api/downloadmateri?file=${encodeURIComponent(file)}&category=${encodeURIComponent(category)}`,
-          penerbit: metadata.penerbit || '-', // Menambahkan penerbit jika ada
-          tahunTerbit: metadata.tahunTerbit || '-', // Menambahkan tahun terbit jika ada
-          deskripsi: metadata.deskripsi || '-', // Menambahkan deskripsi jika ada
+          penerbit: metadata.penerbit || '-', 
+          tahunTerbit: metadata.tahunTerbit || '-', 
+          deskripsi: metadata.deskripsi || '-', 
+          judulJurnal: metadata.judulJurnal || '-', 
+          penulisJurnal: metadata.penulisJurnal || '-', 
+          penerbitJurnal: metadata.penerbitJurnal || '-', 
+          tahunJurnal: metadata.tahunJurnal || '-', 
+          asalJurnal: metadata.asalJurnal || '-', 
+          judulTA: metadata.judulTA || '-', 
+          namaTA: metadata.namaTA || '-', 
+          tahunTA: metadata.tahunTA || '-', 
         });
       }
     }

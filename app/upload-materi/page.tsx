@@ -1,50 +1,49 @@
 "use client";
-
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import UploadMateri from "@/components/UploadMateri";
-import { motion } from "framer-motion";
+import { getRedirectPath } from "@/lib/auth-actions";
 
-const allowedEmails = ["nabilzihni08@gmail.com"];
+const SUPER_ADMIN_EMAIL = 'nabilzihni08@gmail.com';
 
 const UploadMateriPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (status === "loading") return; // Tunggu session selesai
-    if (!session?.user) {
-      router.push("/login"); // Redirect jika tidak login
-    } else if (!allowedEmails.includes(session.user.email || "")) {
-      router.push("/unauthorized"); // Redirect jika email tidak diizinkan
+    if (status === "loading") return; 
+    if (!session?.user?.email) {
+      router.push("/login");
+      return;
     }
+
+    if (session.user.email === SUPER_ADMIN_EMAIL) {
+        router.replace('/admin/dashboard');
+        return;
+    }
+
+    setIsAuthorized(true);
+
   }, [session, status, router]);
 
-  // Loading Screen UI - Animasi Modern
-  if (status === "loading") {
+  if (status === "loading" || isAuthorized === null) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="flex flex-col items-center"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-            className="w-16 h-16 border-4 border-gray-300 border-t-blue-500 rounded-full"
-          ></motion.div>
-          <p className="text-white text-lg font-semibold mt-4">Loading, please wait...</p>
-        </motion.div>
+      <div className="flex items-center justify-center min-h-screen bg-slate-900 text-white">
+        <div className="flex items-center gap-4">
+            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-xl">Loading, please wait...</p>
+        </div>
       </div>
     );
   }
 
-  return (
-      <UploadMateri session={session} />
-  );
+  if (isAuthorized) {
+    return <UploadMateri session={session} />;
+  }
+
+  return null;
 };
 
 export default UploadMateriPage;

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-/* globals.css */
->>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
 @import "tailwindcss";
 
 :root {
@@ -9,38 +5,29 @@
   --foreground: #171717;
 }
 
-/* Ensure no horizontal scroll */
-<<<<<<< HEAD
-/* Enable smooth scrolling globally */
-=======
 html,
 body {
   height: 100%;
   width: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden; 
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  margin: 0; /* Remove any default margin */
-  padding: 0; /* Remove any default padding */
-  box-sizing: border-box; /* Ensure box-sizing is set to border-box */
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
 }
 
-/* Optional: Enable smooth scrolling globally */
->>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
 /* html {
   scroll-behavior: smooth;
 } */
 
-/* Optional: Improve scroll performance for animated sections */
 /* section {
   will-change: transform, opacity;
 } */
-
-<<<<<<< HEAD
 
 @theme inline {
   --color-background: var(--background);
@@ -49,9 +36,6 @@ body {
   --font-mono: var(--font-geist-mono);
 }
 
-=======
-/* Dark theme for prefers-color-scheme */
->>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -59,15 +43,6 @@ body {
   }
 }
 
-<<<<<<< HEAD
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-
-=======
 /* Tailwind custom theme */
 @theme inline {
   --color-background: var(--background);
@@ -75,4 +50,10 @@ body {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
->>>>>>> 73990efc66e917b917af19d197cdce76cc2c1087
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+

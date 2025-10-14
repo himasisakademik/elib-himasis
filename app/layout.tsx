@@ -13,7 +13,6 @@ const clashDisplay = localFont({
   variable: "--font-clash-display",
 });
 
-// Server-side metadata export
 export const metadata: Metadata = {
   title: "E Library Himasis",
   description: "Bersatu Dalam Kolaborasi",
