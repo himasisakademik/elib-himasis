@@ -631,7 +631,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
 
       <button
         onClick={() => setIsTutorialOpen(true)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
+        className="fixed bottom-6 right-6 z   -50 w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
         title="Buka Tutorial"
       >
         <FaQuestion />
@@ -669,7 +669,8 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
 
         <div className="text-center mb-8">
           <h2 className="text-5xl font-black mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-pulse">
-            Materi {filterCategory}
+          Ikhtisar Materi Kuliah 
+          {/* {filterCategory} */}
           </h2>
           <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full animate-pulse"></div>
         </div>
