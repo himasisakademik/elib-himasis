@@ -4,7 +4,7 @@ import path from 'path';
 import { auth } from '@/auth';
 
 const emailsFilePath = path.join(process.cwd(), 'allowed-emails.json');
-const SUPER_ADMIN_EMAIL = 'nabilzihni08@gmail.com';
+const SUPER_ADMIN_EMAIL = 'andryalfarisi015@gmail.com';
 
 async function getAllowedEmails(): Promise<string[]> {
   try {
