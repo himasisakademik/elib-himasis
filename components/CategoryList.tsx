@@ -13,6 +13,8 @@ import {
 } from "react-icons/fa";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Pagination from "./Pagination";
+import { FaStreetView } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 
 const formatFileSize = (sizeInBytes: number): string => {
   if (sizeInBytes < 1024) {
@@ -38,7 +40,7 @@ interface File {
   path: string;
   mataKuliah?: string;
   semester?: string;
-  dosen?: string;
+  penyusun?: string;
   penerbit?: string;
   tahunTerbit?: string;
   deskripsi?: string;
@@ -50,6 +52,9 @@ interface File {
   judulTA?: string;
   namaTA?: string;
   tahunTA?: string;
+  downloadUrl?: string;
+  gdriveUrl?: string;
+  tahun?: string;
 }
 
 interface CategoryListProps {
@@ -264,7 +269,7 @@ const tutorialSteps = [
   {
     title: "Langkah 1: Pilih Kategori",
     content:
-      "Gunakan menu dropdown ini untuk memilih jenis materi yang Anda cari, seperti Mata Kuliah, Jurnal, dan lainnya.",
+      "Gunakan menu dropdown ini untuk memilih jenis materi yang Anda cari, seperti Ikhtisar Materi Kuliah, dan lainnya.",
     icon: "📚",
   },
   {
@@ -274,23 +279,23 @@ const tutorialSteps = [
     icon: "🔍",
   },
   {
-    title: "Contoh: Kategori Mata Kuliah",
+    title: "Contoh: Kategori Ikhtisar Materi Kuliah",
     content:
-      "Anda bisa mencari berdasarkan 'Nama Materi', 'Mata Kuliah', 'Semester', atau 'Nama Dosen'. Cukup ketik salah satunya!",
+      "Anda bisa mencari berdasarkan 'Nama Materi', 'Mata Ikhtisar Materi Kuliah', 'Semester', atau 'Nama Penyusun'. Cukup ketik salah satunya!",
     icon: "🎓",
   },
-  {
-    title: "Contoh: Kategori Jurnal",
-    content:
-      "Cari berdasarkan 'Judul Jurnal', 'Penulis', 'Penerbit', 'Tahun', atau 'Asal Kampus'.",
-    icon: "🔬",
-  },
-  {
-    title: "Contoh: Kategori Tugas Akhir",
-    content:
-      "Temukan skripsi atau TA dengan mencari 'Judul TA', 'Nama Penulis', atau 'Tahun'.",
-    icon: "📜",
-  },
+  // {
+  //   title: "Contoh: Kategori Jurnal",
+  //   content:
+  //     "Cari berdasarkan 'Judul Jurnal', 'Penulis', 'Penerbit', 'Tahun', atau 'Asal Kampus'.",
+  //   icon: "🔬",
+  // },
+  // {
+  //   title: "Contoh: Kategori Tugas Akhir",
+  //   content:
+  //     "Temukan skripsi atau TA dengan mencari 'Judul TA', 'Nama Penulis', atau 'Tahun'.",
+  //   icon: "📜",
+  // },
   {
     title: "Contoh: Kategori Umum",
     content:
@@ -424,6 +429,8 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
     setCurrentPage(1);
   };
 
+  
+
   const processedFiles = React.useMemo(() => {
     let filtered = files.filter((file) => {
       if (filterSemester !== "all" && file.semester !== filterSemester) {
@@ -432,9 +439,10 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
       const searchLower = searchQuery.toLowerCase();
       const searchableFields = [
         file.name,
+        file.tahun,
         file.mataKuliah,
         file.semester,
-        file.dosen,
+        file.penyusun,
         file.penerbit,
         file.tahunTerbit,
         file.deskripsi,
@@ -475,11 +483,23 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   const indexOfFirstFile = indexOfLastFile - recordsPerPage;
   const currentFiles = processedFiles.slice(indexOfFirstFile, indexOfLastFile);
 
-  const getShareUrl = (fileName: string) => {
-    const fileUrl = `${window.location.origin}/api/downloadmateri?file=${encodeURIComponent(fileName)}&category=${encodeURIComponent(filterCategory)}`;
+  // const getShareUrl = (fileName: string) => {
+  //   const fileUrl = `${window.location.origin}/api/downloadmateri?file=${encodeURIComponent(fileName)}&category=${encodeURIComponent(filterCategory)}`;
+  //   // const fileUrl = ;
+  //   return {
+  //     whatsapp: `https://wa.me/?text=${encodeURIComponent("Hello Sobat! Silahkan dibaca materi berikut : \n" + fileUrl + "\n\nThank You...")}`,
+  //     fileUrl: fileUrl,
+  //   };
+  // };
+
+  const getShareUrl = (downloadUrl: string) => {
     return {
-      whatsapp: `https://wa.me/?text=${encodeURIComponent("Hello Sobat! Silahkan dibaca materi berikut : \n" + fileUrl + "\n\nThank You...")}`,
-      fileUrl: fileUrl,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(
+        "Hello Sobat! Silahkan dibaca materi berikut :\n" +
+        downloadUrl +
+        "\n\nThank You..."
+      )}`,
+      fileUrl: downloadUrl,
     };
   };
 
@@ -495,7 +515,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         return (
           <>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Mata Kuliah:</span>
+              <span className="text-gray-400">Materi Kuliah:</span>
               <span className="text-cyan-300 font-medium truncate text-right">
                 {file.mataKuliah || "N/A"}
               </span>
@@ -507,71 +527,72 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Dosen:</span>
+              <span className="text-gray-400">penyusun:</span>
               <span className="text-emerald-300 font-medium truncate text-right">
-                {file.dosen || "N/A"}
+                {file.penyusun || "N/A"}
               </span>
             </div>
+            
           </>
         );
-      case "jurnal":
-        return (
-          <>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Judul:</span>
-              <span className="text-cyan-300 font-medium truncate text-right">
-                {file.judulJurnal || "N/A"}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Penulis:</span>
-              <span className="text-emerald-300 font-medium truncate text-right">
-                {file.penulisJurnal || "N/A"}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Penerbit:</span>
-              <span className="text-white font-medium truncate text-right">
-                {file.penerbitJurnal || "N/A"}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Tahun:</span>
-              <span className="text-white font-medium">
-                {file.tahunJurnal || "N/A"}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Asal:</span>
-              <span className="text-white font-medium truncate text-right">
-                {file.asalJurnal || "N/A"}
-              </span>
-            </div>
-          </>
-        );
-      case "tugas-akhir":
-        return (
-          <>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Judul TA:</span>
-              <span className="text-cyan-300 font-medium truncate text-right">
-                {file.judulTA || "N/A"}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Penulis:</span>
-              <span className="text-emerald-300 font-medium truncate text-right">
-                {file.namaTA || "N/A"}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Tahun:</span>
-              <span className="text-white font-medium">
-                {file.tahunTA || "N/A"}
-              </span>
-            </div>
-          </>
-        );
+      // case "jurnal":
+      //   return (
+      //     <>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Judul:</span>
+      //         <span className="text-cyan-300 font-medium truncate text-right">
+      //           {file.judulJurnal || "N/A"}
+      //         </span>
+      //       </div>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Penulis:</span>
+      //         <span className="text-emerald-300 font-medium truncate text-right">
+      //           {file.penulisJurnal || "N/A"}
+      //         </span>
+      //       </div>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Penerbit:</span>
+      //         <span className="text-white font-medium truncate text-right">
+      //           {file.penerbitJurnal || "N/A"}
+      //         </span>
+      //       </div>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Tahun:</span>
+      //         <span className="text-white font-medium">
+      //           {file.tahunJurnal || "N/A"}
+      //         </span>
+      //       </div>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Asal:</span>
+      //         <span className="text-white font-medium truncate text-right">
+      //           {file.asalJurnal || "N/A"}
+      //         </span>
+      //       </div>
+      //     </>
+      //   );
+      // case "tugas-akhir":
+      //   return (
+      //     <>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Judul TA:</span>
+      //         <span className="text-cyan-300 font-medium truncate text-right">
+      //           {file.judulTA || "N/A"}
+      //         </span>
+      //       </div>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Penulis:</span>
+      //         <span className="text-emerald-300 font-medium truncate text-right">
+      //           {file.namaTA || "N/A"}
+      //         </span>
+      //       </div>
+      //       <div className="flex justify-between text-sm">
+      //         <span className="text-gray-400">Tahun:</span>
+      //         <span className="text-white font-medium">
+      //           {file.tahunTA || "N/A"}
+      //         </span>
+      //       </div>
+      //     </>
+      //   );
       case "umum":
         return (
           <>
@@ -663,14 +684,14 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                 className="bg-transparent text-white focus:outline-none cursor-pointer"
               >
                 <option value="matkul" className="bg-slate-800">
-                  Mata Kuliah
+                Ikhtisar Materi Kuliah
                 </option>
-                <option value="jurnal" className="bg-slate-800">
+                {/* <option value="jurnal" className="bg-slate-800">
                   Jurnal
                 </option>
                 <option value="tugas-akhir" className="bg-slate-800">
                   Tugas Akhir
-                </option>
+                </option> */}
                 <option value="umum" className="bg-slate-800">
                   Umum
                 </option>
@@ -804,7 +825,8 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {currentFiles.map((file, index) => {
-            const { whatsapp, fileUrl } = getShareUrl(file.name);
+            const { whatsapp, fileUrl } = getShareUrl(  file.downloadUrl || file.gdriveUrl || "#"
+            );
             return (
               <div
                 key={`${file.name}-${index}`}
@@ -824,21 +846,22 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                       <p className="font-bold text-xl text-white mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors truncate">
                         {file.name}
                       </p>
-                      <p className="text-sm text-gray-300 bg-slate-800/50 px-2 py-1 rounded-lg inline-block">
+                      {/* <p className="text-sm text-gray-300 bg-slate-800/50 px-2 py-1 rounded-lg inline-block">
                         Size: {formatFileSize(file.size)}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                   <div className="space-y-2 mb-4">
                     {renderFileDetails(file)}
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Uploaded:</span>
+                      <span className="text-gray-400">Tahun:</span>
                       <span className="text-amber-300 font-medium">
-                        {new Date(file.uploadTime).toLocaleString()}
+                        {file.tahun || "N/A"}
                       </span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center pt-4 border-t border-white/10">
+                  
                     <div className="flex space-x-3">
                       <a
                         href={whatsapp}
@@ -850,6 +873,14 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                       </a>
                     </div>
                     <div className="flex space-x-3">
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={file.gdriveUrl}
+                        className="bg-violet-500/20 backdrop-blur-sm p-3 rounded-xl border border-violet-500/30 text-violet-400 hover:text-blue-300 hover:bg-blue-500/30 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-blue-500/25"
+                      >
+                        <FaEye   className="text-lg" />
+                      </a>
                       <button
                         onClick={() => handleCopyUrl(fileUrl, file.name)}
                         className="bg-yellow-500/20 backdrop-blur-sm p-3 rounded-xl border border-yellow-500/30 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/30 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-yellow-500/25"
@@ -864,6 +895,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                         <FaDownload className="text-lg" />
                       </a>
                     </div>
+                    
                   </div>
                 </div>
               </div>

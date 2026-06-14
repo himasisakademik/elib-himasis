@@ -24,9 +24,9 @@ const navItems: NavItem[] = [
     description: "Jelajahi koleksi digital",
     isDropdown: true,
     children: [
-      { href: "/library/search/matkul", label: "Mata Kuliah", icon: <Book className="w-4 h-4" />, description: "Materi perkuliahan" },
-      { href: "/library/search/jurnal", label: "Jurnal", icon: <FileText className="w-4 h-4" />, description: "Jurnal akademik" },
-      { href: "/library/search/tugas-akhir", label: "Tugas Akhir", icon: <GraduationCap className="w-4 h-4" />, description: "Proyek & skripsi" },
+      { href: "/library/search/matkul", label: "Ikhtisar Materi Kuliahh", icon: <Book className="w-4 h-4" />, description: "Materi perkuliahan" },
+      // { href: "/library/search/jurnal", label: "Jurnal", icon: <FileText className="w-4 h-4" />, description: "Jurnal akademik" },
+      // { href: "/library/search/tugas-akhir", label: "Tugas Akhir", icon: <GraduationCap className="w-4 h-4" />, description: "Proyek & skripsi" },
       { href: "/library/search/umum", label: "Umum", icon: <Search className="w-4 h-4" />, description: "Sumber daya umum" },
     ]
   },

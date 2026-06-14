@@ -33,22 +33,22 @@ interface SocialLink {
 const navigationLinks: NavigationLink[] = [
   {
     href: "/library/search/matkul",
-    label: "Mata Kuliah",
+    label: "Ikhtisar Materi Kuliah",
     description: "Course Materials",
     icon: "📚"
   },
-  {
-    href: "/library/search/jurnal",
-    label: "Jurnal",
-    description: "Research Journals",
-    icon: "📄"
-  },
-  {
-    href: "/library/search/tugas-akhir",
-    label: "Tugas Akhir",
-    description: "Final Projects",
-    icon: "🎓"
-  },
+  // {
+  //   href: "/library/search/jurnal",
+  //   label: "Jurnal",
+  //   description: "Research Journals",
+  //   icon: "📄"
+  // },
+  // {
+  //   href: "/library/search/tugas-akhir",
+  //   label: "Tugas Akhir",
+  //   description: "Final Projects",
+  //   icon: "🎓"
+  // },
   {
     href: "/library/search/umum",
     label: "Umum",

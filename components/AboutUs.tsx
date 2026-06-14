@@ -22,7 +22,7 @@ const textArray = [
 
 const stats = [
   { number: "30+", label: "Digital Books", icon: "📚" },
-  { number: "500+", label: "Research Papers", icon: "📄" },
+  // { number: "500+", label: "Research Papers", icon: "📄" },
   { number: "100+", label: "Active Users", icon: "👥" },
   { number: "20", label: "Study Categories", icon: "🗂️" }
 ];
@@ -187,7 +187,7 @@ const AboutUs = () => {
           </motion.div>
         </div>
 
-        <motion.div className="mt-20" variants={itemVariants}>
+        {/* <motion.div className="mt-20" variants={itemVariants}>
           <div className="bg-slate-800/30 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/30 shadow-2xl">
             <h3 className="text-2xl font-bold text-center mb-12 bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
               Our Impact in Numbers
@@ -215,7 +215,7 @@ const AboutUs = () => {
               ))}
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
         <motion.div className="mt-20 text-center" variants={itemVariants}>
           <div className="max-w-4xl mx-auto bg-gradient-to-r from-slate-800/40 via-slate-800/60 to-slate-800/40 backdrop-blur-xl rounded-3xl p-12 border border-slate-700/50 shadow-2xl">

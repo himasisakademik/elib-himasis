@@ -41,30 +41,30 @@ const heroContent = [
 ];
 
 const achievements = [
-  { 
-    icon: "📖", 
-    count: "100+", 
-    label: "Digital Books",
-    description: "Curated collection",
-    color: "from-blue-500/20 to-cyan-500/20",
-    border: "border-blue-500/30"
-  },
-  { 
-    icon: "📄", 
-    count: "100+", 
-    label: "Research Papers",
-    description: "Academic journals",
-    color: "from-purple-500/20 to-pink-500/20",
-    border: "border-purple-500/30"
-  },
-  { 
-    icon: "🎓", 
-    count: "300+", 
-    label: "Active Students",
-    description: "Growing community",
-    color: "from-green-500/20 to-emerald-500/20",
-    border: "border-green-500/30"
-  },
+  // { 
+  //   icon: "📖", 
+  //   count: "100+", 
+  //   label: "Digital Books",
+  //   description: "Curated collection",
+  //   color: "from-blue-500/20 to-cyan-500/20",
+  //   border: "border-blue-500/30"
+  // },
+  // { 
+  //   icon: "📄", 
+  //   count: "100+", 
+  //   label: "Research Papers",
+  //   description: "Academic journals",
+  //   color: "from-purple-500/20 to-pink-500/20",
+  //   border: "border-purple-500/30"
+  // },
+  // { 
+  //   icon: "🎓", 
+  //   count: "300+", 
+  //   label: "Active Students",
+  //   description: "Growing community",
+  //   color: "from-green-500/20 to-emerald-500/20",
+  //   border: "border-green-500/30"
+  // },
   { 
     icon: "⚡", 
     count: "24/7", 
