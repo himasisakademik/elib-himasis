@@ -41,6 +41,11 @@ const Pagination: FC<PaginationProps> = ({
 }) => {
   if (totalPages <= 1) return null;
 
+  // const fileId = extractFileId(gdriveUrl);
+  
+  // const downloadUrl =
+  // `https://drive.google.com/uc?export=download&id=${fileId}`;
+
   const getPaginationItems = () => {
     const pageNeighbours = 1;
     const totalNumbers = pageNeighbours * 2 + 3;
@@ -121,8 +126,9 @@ interface FileData {
   uploadTime: string;
   path: string;
   mataKuliah?: string;
+  gdriveUrl?: string;
   semester?: string;
-  dosen?: string;
+  penyusun?: string;
   penerbit?: string;
   tahunTerbit?: string;
   deskripsi?: string;
@@ -255,10 +261,12 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("matkul");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [gdriveUrl, setGdriveUrl] = useState("");
+  const [tahun, settahun] = useState("");
 
   const [mataKuliah, setMataKuliah] = useState("");
   const [semester, setSemester] = useState("");
-  const [dosen, setDosen] = useState("");
+  const [penyusun, setpenyusun] = useState("");
 
   const [penerbit, setPenerbit] = useState("");
   const [tahunTerbit, setTahunTerbit] = useState("");
@@ -271,7 +279,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
   const [asalJurnal, setAsalJurnal] = useState("");
 
   const [judulTA, setJudulTA] = useState("");
-  const [namaTA, setNamaTA] = useState("");
+  const [namaTA, setNamaTA] = useState(""); 
   const [tahunTA, setTahunTA] = useState("");
 
   const [files, setFiles] = useState<FileData[]>([]);
@@ -288,9 +296,10 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     name: "",
     mataKuliah: "",
     semester: "",
-    dosen: "",
+    penyusun: "",
     penerbit: "",
     tahunTerbit: "",
+    gdriveUrl: "",
     deskripsi: "",
     judulJurnal: "",
     penulisJurnal: "",
@@ -468,29 +477,32 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (!file) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Silakan pilih file untuk diupload.",
-        background: "#1e293b",
-        color: "#fff",
-        confirmButtonColor: "#3b82f6",
-      });
-      setIsSubmitting(false);
-      return;
-    }
+    // if (!file) {
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Oops...",
+    //     text: "Silakan pilih file untuk diupload.",
+    //     background: "#1e293b",
+    //     color: "#fff",
+    //     confirmButtonColor: "#3b82f6",
+    //   });
+    //   setIsSubmitting(false);
+    //   return;
+    // }
 
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      // formData.append("file", file);
+      formData.append("gdriveUrl", gdriveUrl);
       formData.append("name", name);
       formData.append("category", category);
+
 
       if (category === "matkul") {
         formData.append("mataKuliah", mataKuliah);
         formData.append("semester", semester);
-        formData.append("dosen", dosen);
+        formData.append("penyusun", penyusun);
+        formData.append("tahun", tahun);
       } else if (category === "umum") {
         formData.append("penerbit", penerbit);
         formData.append("tahun_terbit", tahunTerbit);
@@ -529,7 +541,8 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
         setName("");
         setSemester("");
         setMataKuliah("");
-        setDosen("");
+        setpenyusun("");
+        setGdriveUrl("");
         setCategory("matkul");
         setPenerbit("");
         setTahunTerbit("");
@@ -646,7 +659,8 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     return (
       check(file.name) ||
       check(file.mataKuliah) ||
-      check(file.dosen) ||
+      check(file.penyusun) ||
+      check(file.gdriveUrl) ||
       check(file.penerbit) ||
       check(file.judulJurnal) ||
       check(file.penulisJurnal) ||
@@ -698,9 +712,10 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     setSelectedFile(file);
     setUpdateFormData({
       name: file.name || "",
+      gdriveUrl: file.gdriveUrl || "", 
       mataKuliah: file.mataKuliah || "",
       semester: file.semester || "",
-      dosen: file.dosen || "",
+      penyusun: file.penyusun || "",
       penerbit: file.penerbit || "",
       tahunTerbit: file.tahunTerbit || "",
       deskripsi: file.deskripsi || "",
@@ -726,6 +741,8 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
         uploadTime: selectedFile?.uploadTime || new Date().toISOString(),
         fileName: selectedFile?.name,
       };
+
+      console.log(updateFormData);
 
       const response = await fetch("/api/uploadmateri", {
         method: "PUT",
@@ -799,10 +816,10 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     switch (cat) {
       case "matkul":
         return <FileText className="w-4 h-4" />;
-      case "jurnal":
-        return <FileText className="w-4 h-4" />;
-      case "tugas-akhir":
-        return <FileText className="w-4 h-4" />;
+      // case "jurnal":
+      //   return <FileText className="w-4 h-4" />;
+      // case "tugas-akhir":
+      //   return <FileText className="w-4 h-4" />;
       case "umum":
         return <FileText className="w-4 h-4" />;
       default:
@@ -919,9 +936,9 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                         onChange={(e) => setCategory(e.target.value)}
                         className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300"
                       >
-                        <option value="matkul">Mata Kuliah</option>
-                        <option value="jurnal">Jurnal</option>
-                        <option value="tugas-akhir">Tugas Akhir</option>
+                        <option value="matkul">Ikhtisar Materi Kuliahh</option>
+                        {/* <option value="jurnal">Jurnal</option>
+                        <option value="tugas-akhir">Tugas Akhir</option> */}
                         <option value="umum">Umum</option>
                       </select>
                     </div>
@@ -930,7 +947,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                       <>
                         <div className="space-y-2">
                           <label className="block text-sm font-medium text-slate-300">
-                            Mata Kuliah
+                           Materi Kuliah
                           </label>
                           <input
                             type="text"
@@ -954,22 +971,48 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                             required
                           />
                         </div>
-                        <div className="space-y-2 lg:col-span-2">
+                        {/* <div className="space-y-2">
                           <label className="block text-sm font-medium text-slate-300">
-                            Nama Dosen
+                            Tahun
                           </label>
                           <input
                             type="text"
-                            value={dosen}
-                            onChange={(e) => setDosen(e.target.value)}
-                            placeholder="Nama dosen pengampu"
+                            value={tahun}
+                            onChange={(e) => settahun(e.target.value)}
+                            placeholder="Contoh: 2023"
+                            className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl"
+                            required
+                          />
+                        </div> */}
+                        <div className="space-y-2 lg:col-span-2">
+                          <label className="block text-sm font-medium text-slate-300">
+                            Penyusun
+                          </label>
+                          <input
+                            type="text"
+                            value={penyusun}
+                            onChange={(e) => setpenyusun(e.target.value)}
+                            placeholder="Nama Penyusun Materi"
+                            className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2 lg:col-span-2">
+                          <label className="block text-sm font-medium text-slate-300">
+                            Link Google Drive
+                          </label>
+                          <input
+                            type="text"
+                            value={gdriveUrl}
+                            onChange={(e) => setGdriveUrl(e.target.value)}
+                            placeholder="Cantumkan Link Google Drive"
                             className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl"
                             required
                           />
                         </div>
                       </>
                     )}
-                    {category === "jurnal" && (
+                    {/* {category === "jurnal" && (
                       <>
                         <div className="space-y-2">
                           <label className="block text-sm font-medium text-slate-300">
@@ -1080,7 +1123,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                           />
                         </div>
                       </>
-                    )}
+                    )} */}
                     {category === "umum" && (
                       <>
                         <div className="space-y-2">
@@ -1127,7 +1170,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                     )}
                   </div>
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-300">
                       Upload File
                     </label>
@@ -1174,7 +1217,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </div> */}
 
                   <button
                     type="submit"
@@ -1246,7 +1289,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari berdasarkan nama, mata kuliah, dosen, semester..."
+                  placeholder="Cari berdasarkan nama, Ikhtisar Materi Kuliah, penyusun, semester..."
                   className="w-full pl-12 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300"
                 />
               </div>
@@ -1342,7 +1385,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                             <>
                               <span>
                                 <User size={14} className="inline mr-1" />
-                                {file.dosen}
+                                {file.penyusun}
                               </span>
                               <span>
                                 <FileText size={14} className="inline mr-1" />
@@ -1351,7 +1394,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                               <span>Semester: {file.semester}</span>
                             </>
                           )}
-                          {category === "jurnal" && (
+                          {/* {category === "jurnal" && (
                             <>
                               <span>
                                 <File size={14} className="inline mr-1" />
@@ -1390,7 +1433,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                                 {file.tahunTA}
                               </span>
                             </>
-                          )}
+                          )} */}
                           {category === "umum" && (
                             <>
                               <span>
@@ -1473,12 +1516,12 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                           </p>
                           <p className="truncate">
                             <User size={12} className="inline mr-1.5" />
-                            {file.dosen}
+                            {file.penyusun}
                           </p>
                           <p>Semester: {file.semester}</p>
                         </>
                       )}
-                      {category === "jurnal" && (
+                      {/* {category === "jurnal" && (
                         <>
                           <p className="truncate">
                             <File size={12} className="inline mr-1.5" />
@@ -1517,7 +1560,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                             {file.tahunTA}
                           </p>
                         </>
-                      )}
+                      )} */}
                       {category === "umum" && (
                         <>
                           <p className="truncate">
@@ -1643,7 +1686,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                   {category === "matkul" && (
                     <>
                       <div className="space-y-2">
-                        <label>Mata Kuliah</label>
+                        <label>Ikhtisar Materi Kuliah</label>
                         <input
                           type="text"
                           value={updateFormData.mataKuliah}
@@ -1671,14 +1714,28 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label>Dosen</label>
+                        <label>penyusun</label>
                         <input
                           type="text"
-                          value={updateFormData.dosen}
+                          value={updateFormData.penyusun}
                           onChange={(e) =>
                             setUpdateFormData({
                               ...updateFormData,
-                              dosen: e.target.value,
+                              penyusun: e.target.value,
+                            })
+                          }
+                          className="w-full bg-slate-700 p-2 rounded-md"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label>Link Google Drive</label>
+                        <input
+                          type="text"
+                          value={updateFormData.gdriveUrl}
+                          onChange={(e) =>
+                            setUpdateFormData({
+                              ...updateFormData,
+                              gdriveUrl: e.target.value,
                             })
                           }
                           className="w-full bg-slate-700 p-2 rounded-md"
@@ -1686,7 +1743,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                       </div>
                     </>
                   )}
-                  {category === "jurnal" && (
+                  {/* {category === "jurnal" && (
                     <>
                       <div className="space-y-2">
                         <label>Judul Jurnal</label>
@@ -1759,8 +1816,8 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                         />
                       </div>
                     </>
-                  )}
-                  {category === "tugas-akhir" && (
+                  )} */}
+                  {/* {category === "tugas-akhir" && (
                     <>
                       <div className="space-y-2">
                         <label>Judul TA</label>
@@ -1805,7 +1862,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                         />
                       </div>
                     </>
-                  )}
+                  )} */}
                   {category === "umum" && (
                     <>
                       <div className="space-y-2">

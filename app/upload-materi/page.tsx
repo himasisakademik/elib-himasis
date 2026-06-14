@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import UploadMateri from "@/components/UploadMateri";
 
-const SUPER_ADMIN_EMAIL = "nabilzihni08@gmail.com";
+const SUPER_ADMIN_EMAIL = "andryalfarisi015@gmail.com";
 
 const UploadMateriPage = () => {
   const { data: session, status } = useSession();
