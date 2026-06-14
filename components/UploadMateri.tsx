@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect, useRef, FC, FormEvent } from "react";
-import { useDropzone } from "react-dropzone";
 import {
   LogOut,
   Upload,
@@ -27,98 +26,8 @@ import Swal from "sweetalert2";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { signOut } from "next-auth/react";
+import Pagination from "./Pagination";
 
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
-
-const Pagination: FC<PaginationProps> = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => {
-  if (totalPages <= 1) return null;
-
-  // const fileId = extractFileId(gdriveUrl);
-  
-  // const downloadUrl =
-  // `https://drive.google.com/uc?export=download&id=${fileId}`;
-
-  const getPaginationItems = () => {
-    const pageNeighbours = 1;
-    const totalNumbers = pageNeighbours * 2 + 3;
-    const totalBlocks = totalNumbers + 2;
-
-    if (totalPages > totalBlocks) {
-      const startPage = Math.max(2, currentPage - pageNeighbours);
-      const endPage = Math.min(totalPages - 1, currentPage + pageNeighbours);
-      let pages: (number | string)[] = Array.from(
-        { length: endPage - startPage + 1 },
-        (_, i) => startPage + i,
-      );
-
-      const hasLeftSpill = startPage > 2;
-      const hasRightSpill = totalPages - endPage > 1;
-      const spillOffset = totalNumbers - (pages.length + 1);
-
-      switch (true) {
-        case hasLeftSpill && !hasRightSpill: {
-          const extraPages = Array.from(
-            { length: spillOffset + 1 },
-            (_, i) => startPage - i - 1,
-          ).reverse();
-          pages = ["...", ...extraPages, ...pages];
-          break;
-        }
-        case !hasLeftSpill && hasRightSpill: {
-          const extraPages = Array.from(
-            { length: spillOffset + 1 },
-            (_, i) => endPage + i + 1,
-          );
-          pages = [...pages, ...extraPages, "..."];
-          break;
-        }
-        case hasLeftSpill && hasRightSpill:
-        default: {
-          pages = ["...", ...pages, "..."];
-          break;
-        }
-      }
-      return [1, ...pages, totalPages];
-    }
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
-  };
-
-  const pages = getPaginationItems();
-
-  return (
-    <div className="flex justify-center items-center gap-2 mt-6 sm:mt-8 flex-wrap">
-      {pages.map((page, index) => {
-        if (typeof page === "string") {
-          return (
-            <span
-              key={`${page}-${index}`}
-              className="px-3 sm:px-4 py-2 text-slate-400"
-            >
-              ...
-            </span>
-          );
-        }
-        return (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`px-3 sm:px-4 py-2 rounded-xl transition-all duration-300 ${currentPage === page ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25" : "bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 hover:text-white"}`}
-          >
-            {page}
-          </button>
-        );
-      })}
-    </div>
-  );
-};
 interface FileData {
   name: string;
   originalFileName: string;
@@ -142,111 +51,7 @@ interface FileData {
   tahunTA?: string;
 }
 
-interface ParticleConfig {
-  particles: {
-    number: {
-      value: number;
-      density: {
-        enable: boolean;
-        value_area: number;
-      };
-    };
-    color: {
-      value: string;
-    };
-    shape: {
-      type: string;
-      stroke: {
-        width: number;
-        color: string;
-      };
-      polygon: {
-        nb_sides: number;
-      };
-    };
-    opacity: {
-      value: number;
-      random: boolean;
-      anim: {
-        enable: boolean;
-        speed: number;
-        opacity_min: number;
-        sync: boolean;
-      };
-    };
-    size: {
-      value: number;
-      random: boolean;
-      anim: {
-        enable: boolean;
-        speed: number;
-        size_min: number;
-        sync: boolean;
-      };
-    };
-    line_linked: {
-      enable: boolean;
-      distance: number;
-      color: string;
-      opacity: number;
-      width: number;
-    };
-    move: {
-      enable: boolean;
-      speed: number;
-      direction: string;
-      random: boolean;
-      straight: boolean;
-      out_mode: string;
-      bounce: boolean;
-      attract: {
-        enable: boolean;
-        rotateX: number;
-        rotateY: number;
-      };
-    };
-  };
-  interactivity: {
-    detect_on: string;
-    events: {
-      onhover: {
-        enable: boolean;
-        mode: string;
-      };
-      onclick: {
-        enable: boolean;
-        mode: string;
-      };
-      resize: boolean;
-    };
-    modes: {
-      grab: {
-        distance: number;
-        line_linked: {
-          opacity: number;
-        };
-      };
-      bubble: {
-        distance: number;
-        size: number;
-        duration: number;
-        opacity: number;
-        speed: number;
-      };
-      repulse: {
-        distance: number;
-        duration: number;
-      };
-      push: {
-        particles_nb: number;
-      };
-      remove: {
-        particles_nb: number;
-      };
-    };
-  };
-  retina_detect: boolean;
-}
+
 
 interface SweetAlertResult {
   isConfirmed: boolean;
@@ -310,168 +115,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     namaTA: "",
     tahunTA: "",
   });
-  const particlesRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const loadParticles = async () => {
-      try {
-        const script = document.createElement("script");
-        script.src =
-          "https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js";
-        script.async = true;
-
-        script.onload = () => {
-          if (typeof (window as any).particlesJS !== "undefined") {
-            const particlesConfig: ParticleConfig = {
-              particles: {
-                number: {
-                  value: 60,
-                  density: {
-                    enable: true,
-                    value_area: 1000,
-                  },
-                },
-                color: {
-                  value: "#6366f1",
-                },
-                shape: {
-                  type: "circle",
-                  stroke: {
-                    width: 0,
-                    color: "#000000",
-                  },
-                  polygon: {
-                    nb_sides: 5,
-                  },
-                },
-                opacity: {
-                  value: 0.2,
-                  random: true,
-                  anim: {
-                    enable: true,
-                    speed: 1,
-                    opacity_min: 0.05,
-                    sync: false,
-                  },
-                },
-                size: {
-                  value: 2,
-                  random: true,
-                  anim: {
-                    enable: true,
-                    speed: 1,
-                    size_min: 0.1,
-                    sync: false,
-                  },
-                },
-                line_linked: {
-                  enable: true,
-                  distance: 120,
-                  color: "#8b5cf6",
-                  opacity: 0.15,
-                  width: 1,
-                },
-                move: {
-                  enable: true,
-                  speed: 1,
-                  direction: "none",
-                  random: false,
-                  straight: false,
-                  out_mode: "out",
-                  bounce: false,
-                  attract: {
-                    enable: false,
-                    rotateX: 600,
-                    rotateY: 1200,
-                  },
-                },
-              },
-              interactivity: {
-                detect_on: "canvas",
-                events: {
-                  onhover: {
-                    enable: true,
-                    mode: "bubble",
-                  },
-                  onclick: {
-                    enable: true,
-                    mode: "repulse",
-                  },
-                  resize: true,
-                },
-                modes: {
-                  grab: {
-                    distance: 140,
-                    line_linked: {
-                      opacity: 0.3,
-                    },
-                  },
-                  bubble: {
-                    distance: 200,
-                    size: 4,
-                    duration: 2,
-                    opacity: 0.4,
-                    speed: 3,
-                  },
-                  repulse: {
-                    distance: 150,
-                    duration: 0.4,
-                  },
-                  push: {
-                    particles_nb: 4,
-                  },
-                  remove: {
-                    particles_nb: 2,
-                  },
-                },
-              },
-              retina_detect: true,
-            };
-
-            (window as any).particlesJS("particles-js-upload", particlesConfig);
-          }
-        };
-
-        script.onerror = () => {
-          console.warn("Failed to load particles.js");
-        };
-
-        document.head.appendChild(script);
-
-        return () => {
-          if (document.head.contains(script)) {
-            document.head.removeChild(script);
-          }
-        };
-      } catch (error) {
-        console.warn("Error loading particles:", error);
-      }
-    };
-
-    loadParticles();
-  }, []);
-
-  const onDrop = (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      const droppedFile = acceptedFiles[0];
-      setFile(droppedFile);
-      setFileName(droppedFile.name);
-
-      const fileInput = document.getElementById(
-        "file-upload-input",
-      ) as HTMLInputElement;
-      if (fileInput) {
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(droppedFile);
-        fileInput.files = dataTransfer.files;
-      }
-    }
-  };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    multiple: false,
-  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -844,11 +488,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
-      <div
-        id="particles-js-upload"
-        className="absolute inset-0 w-full h-full z-0"
-        ref={particlesRef}
-      />
+      <div className="absolute inset-0 w-full h-full z-0 bg-[radial-gradient(circle_at_top_right,rgba(100,100,250,0.05),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(150,100,250,0.05),transparent_40%)]" />
 
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-transparent z-10" />
       <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse z-10" />
@@ -879,10 +519,10 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                   </div>
                   <div className="text-center sm:text-left">
                     <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
-                      Welcome Back, {session?.user?.name?.split(" ")[0]}!
+                      Selamat Datang Kembali, {session?.user?.name?.split(" ")[0]}!
                     </h1>
                     <p className="text-slate-400 mt-1">
-                      Manage your learning materials
+                      Kelola materi pembelajaran Anda
                     </p>
                   </div>
                 </div>
@@ -1249,11 +889,11 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold text-white">
-                    File Management
+                    Manajemen File
                   </h2>
                   <p className="text-slate-400 text-sm sm:text-base">
                     Kelola file yang telah diupload ({filteredFiles.length}{" "}
-                    files)
+                    file)
                   </p>
                 </div>
               </div>
@@ -1457,7 +1097,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                           href={getShareUrl(file.name)}
                           download
                           className="group/btn relative p-2 sm:p-3 bg-slate-700/50 hover:bg-blue-600 text-slate-400 hover:text-white rounded-xl transition-all duration-300 transform hover:scale-110"
-                          title="Download"
+                          title="Unduh"
                         >
                           <Download className="w-4 h-4" />
                         </a>
@@ -1473,7 +1113,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                         <button
                           onClick={() => deleteFile(file.name)}
                           className="group/btn relative p-2 sm:p-3 bg-slate-700/50 hover:bg-red-600 text-slate-400 hover:text-white rounded-xl transition-all duration-300 transform hover:scale-110"
-                          title="Delete"
+                          title="Hapus"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -1585,7 +1225,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                         href={getShareUrl(file.name)}
                         download
                         className="p-2 bg-slate-700/50 hover:bg-blue-600 text-slate-400 hover:text-white rounded-lg transition-all duration-300"
-                        title="Download"
+                        title="Unduh"
                       >
                         <Download className="w-4 h-4" />
                       </a>
@@ -1601,7 +1241,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                       <button
                         onClick={() => deleteFile(file.name)}
                         className="p-2 bg-slate-700/50 hover:bg-red-600 text-slate-400 hover:text-white rounded-lg transition-all duration-300"
-                        title="Delete"
+                        title="Hapus"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

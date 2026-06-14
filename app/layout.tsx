@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import "./globals.css";
 import { Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
-import { SessionProvider } from "next-auth/react";
+import { Providers } from "../components/Providers";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -48,12 +48,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
+    <html lang="id" className="overflow-x-hidden">
       <HeadContent />
       <body className={`scroll-smooth overflow-x-hidden ${clashDisplay.variable} ${spaceGrotesk.variable}`}>
-        <SessionProvider>{children}</SessionProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
-

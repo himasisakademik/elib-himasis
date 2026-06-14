@@ -2,19 +2,19 @@
 
 import React, { useState, useEffect, useRef, FC } from "react";
 import {
-  FaSearch,
-  FaCopy,
-  FaQuestion,
-  FaSortAmountDown,
-  FaSortAmountUp,
-  FaFileAlt,
-  FaFilter,
-  FaDownload,
-} from "react-icons/fa";
-import { AiOutlineWhatsApp } from "react-icons/ai";
+  Search,
+  Copy,
+  HelpCircle,
+  ArrowDownAZ,
+  ArrowUpAZ,
+  FileText,
+  Filter,
+  Download,
+  MessageCircle,
+  Eye,
+  Check
+} from "lucide-react";
 import Pagination from "./Pagination";
-import { FaStreetView } from "react-icons/fa";
-import { FaEye } from "react-icons/fa";
 
 const formatFileSize = (sizeInBytes: number): string => {
   if (sizeInBytes < 1024) {
@@ -61,203 +61,7 @@ interface CategoryListProps {
   category: string;
 }
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  color: string;
-  opacity: number;
-  angle: number;
-  angleSpeed: number;
-}
-
-const ParticleCanvas: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const animationFrameRef = useRef<number>(0);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    const colors = [
-      "#3B82F6",
-      "#8B5CF6",
-      "#06B6D4",
-      "#10B981",
-      "#F59E0B",
-      "#EF4444",
-    ];
-
-    const createParticle = (): Particle => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 2,
-      vy: (Math.random() - 0.5) * 2,
-      size: Math.random() * 4 + 1,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      opacity: Math.random() * 0.8 + 0.2,
-      angle: Math.random() * Math.PI * 2,
-      angleSpeed: (Math.random() - 0.5) * 0.02,
-    });
-
-    const initParticles = () => {
-      particlesRef.current = [];
-      const particleCount = Math.min(
-        100,
-        Math.floor((canvas.width * canvas.height) / 15000),
-      );
-      for (let i = 0; i < particleCount; i++) {
-        particlesRef.current.push(createParticle());
-      }
-    };
-
-    const updateParticle = (particle: Particle) => {
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-      particle.angle += particle.angleSpeed;
-      const dx = mouseRef.current.x - particle.x;
-      const dy = mouseRef.current.y - particle.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < 150) {
-        const force = (150 - distance) / 150;
-        particle.vx += (dx / distance) * force * 0.1;
-        particle.vy += (dy / distance) * force * 0.1;
-        particle.opacity = Math.min(1, particle.opacity + force * 0.02);
-      } else {
-        particle.opacity = Math.max(0.1, particle.opacity - 0.01);
-      }
-      if (particle.x <= 0 || particle.x >= canvas.width) {
-        particle.vx *= -0.8;
-        particle.x = Math.max(0, Math.min(canvas.width, particle.x));
-      }
-      if (particle.y <= 0 || particle.y >= canvas.height) {
-        particle.vy *= -0.8;
-        particle.y = Math.max(0, Math.min(canvas.height, particle.y));
-      }
-      particle.vx *= 0.99;
-      particle.vy *= 0.99;
-    };
-
-    const drawParticle = (particle: Particle) => {
-      if (!ctx) return;
-      ctx.save();
-      const gradient = ctx.createRadialGradient(
-        particle.x,
-        particle.y,
-        0,
-        particle.x,
-        particle.y,
-        particle.size * 2,
-      );
-      gradient.addColorStop(
-        0,
-        particle.color +
-          Math.floor(particle.opacity * 255)
-            .toString(16)
-            .padStart(2, "0"),
-      );
-      gradient.addColorStop(1, particle.color + "00");
-      ctx.translate(particle.x, particle.y);
-      ctx.rotate(particle.angle);
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      const spikes = 6;
-      const outerRadius = particle.size;
-      const innerRadius = particle.size * 0.5;
-      for (let i = 0; i < spikes * 2; i++) {
-        const radius = i % 2 === 0 ? outerRadius : innerRadius;
-        const angle = (i * Math.PI) / spikes;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.shadowColor = particle.color;
-      ctx.shadowBlur = particle.size * 2;
-      ctx.fill();
-      ctx.restore();
-    };
-
-    const drawConnections = () => {
-      if (!ctx) return;
-      const particles = particlesRef.current;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < 120) {
-            const opacity = ((120 - distance) / 120) * 0.3;
-            ctx.strokeStyle = `rgba(59, 130, 246, ${opacity})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-    };
-
-    const animate = () => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesRef.current.forEach((p) => {
-        updateParticle(p);
-        drawParticle(p);
-      });
-      drawConnections();
-      animationFrameRef.current = requestAnimationFrame(animate);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current.x = e.clientX - rect.left;
-      mouseRef.current.y = e.clientY - rect.top;
-    };
-
-    const handleResize = () => {
-      resizeCanvas();
-      initParticles();
-    };
-    resizeCanvas();
-    initParticles();
-    animate();
-    window.addEventListener("resize", handleResize);
-    if (canvas) canvas.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (canvas) canvas.removeEventListener("mousemove", handleMouseMove);
-      if (animationFrameRef.current)
-        cancelAnimationFrame(animationFrameRef.current);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none z-0"
-      style={{
-        background:
-          "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)",
-      }}
-    />
-  );
-};
+// ParticleCanvas removed for performance - was consuming high CPU with O(n²) connection drawing
 
 const tutorialSteps = [
   {
@@ -623,7 +427,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <ParticleCanvas />
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 via-slate-800/10 to-slate-700/20 backdrop-blur-sm z-10"></div>
       {isTutorialOpen && (
         <TutorialModal onClose={() => setIsTutorialOpen(false)} />
@@ -634,7 +437,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         className="fixed bottom-6 right-6 z   -50 w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
         title="Buka Tutorial"
       >
-        <FaQuestion />
+        <HelpCircle className="w-6 h-6" />
       </button>
       <div className="relative z-20 p-6">
         {copiedFile && (
@@ -642,19 +445,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
             <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-lg border border-white/20 max-w-sm">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+                  <Check className="w-4 h-4" />
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-sm">URL Berhasil Disalin!</div>
@@ -670,7 +461,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         <div className="text-center mb-8">
           <h2 className="text-5xl font-black mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-pulse">
           Ikhtisar Materi Kuliah 
-          {/* {filterCategory} */}
           </h2>
           <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full animate-pulse"></div>
         </div>
@@ -678,7 +468,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 mb-8 border border-white/20 shadow-2xl">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="flex items-center space-x-3 bg-slate-800/50 backdrop-blur-sm p-3 rounded-xl border border-white/10 hover:bg-slate-700/50 transition-all duration-300 group">
-              <FaFilter className="text-xl text-blue-400 group-hover:text-blue-300 transition-colors" />
+              <Filter className="text-xl text-blue-400 group-hover:text-blue-300 transition-colors" />
               <select
                 value={filterCategory}
                 onChange={handleCategoryChange}
@@ -687,12 +477,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                 <option value="matkul" className="bg-slate-800">
                 Ikhtisar Materi Kuliah
                 </option>
-                {/* <option value="jurnal" className="bg-slate-800">
-                  Jurnal
-                </option>
-                <option value="tugas-akhir" className="bg-slate-800">
-                  Tugas Akhir
-                </option> */}
                 <option value="umum" className="bg-slate-800">
                   Umum
                 </option>
@@ -700,7 +484,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
             </div>
             {filterCategory === "matkul" && (
               <div className="flex items-center space-x-3 bg-slate-800/50 backdrop-blur-sm p-3 rounded-xl border border-white/10 hover:bg-slate-700/50 transition-all duration-300 group animate-fade-in">
-                <FaFilter className="text-xl text-emerald-400 group-hover:text-emerald-300 transition-colors" />
+                <Filter className="w-4 h-4 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
                 <select
                   value={filterSemester}
                   onChange={(e) => {
@@ -740,17 +524,17 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
               </div>
             )}
             <div className="flex items-center space-x-3 bg-slate-800/50 backdrop-blur-sm p-3 rounded-xl border border-white/10 hover:bg-slate-700/50 transition-all duration-300 group">
-              <FaSortAmountDown className="text-xl text-purple-400 group-hover:text-purple-300 transition-colors" />
+              <ArrowDownAZ className="text-xl text-purple-400 group-hover:text-purple-300 transition-colors" />
               <select
                 value={sortBy}
                 onChange={handleSortChange}
                 className="bg-transparent text-white focus:outline-none cursor-pointer"
               >
                 <option value="dateDesc" className="bg-slate-800">
-                  Newest First
+                  Terbaru
                 </option>
                 <option value="dateAsc" className="bg-slate-800">
-                  Oldest First
+                  Terlama
                 </option>
                 <option value="alphaAsc" className="bg-slate-800">
                   A-Z
@@ -759,10 +543,10 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                   Z-A
                 </option>
               </select>
-              <FaSortAmountUp className="text-xl text-purple-400 group-hover:text-purple-300 transition-colors" />
+              <ArrowUpAZ className="text-xl text-purple-400 group-hover:text-purple-300 transition-colors" />
             </div>
             <div className="flex items-center space-x-3 bg-slate-800/50 backdrop-blur-sm p-3 rounded-xl border border-white/10 hover:bg-slate-700/50 transition-all duration-300">
-              <span className="text-cyan-400 font-medium">Show</span>
+              <span className="text-cyan-400 font-medium">Tampilkan</span>
               <select
                 value={recordsPerPage}
                 onChange={handleRecordsPerPageChange}
@@ -784,7 +568,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                   100
                 </option>
               </select>
-              <span className="text-cyan-400 font-medium">items</span>
+              <span className="text-cyan-400 font-medium">item</span>
             </div>
           </div>
         </div>
@@ -803,7 +587,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-3 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 hover:scale-110 shadow-lg"
                 onClick={() => setSearchQuery("")}
               >
-                <FaSearch className="text-lg" />
+                <Search className="text-lg" />
               </button>
             </div>
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl -z-10 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300"></div>
@@ -815,10 +599,10 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-2xl p-8 max-w-md mx-auto">
               <div className="text-6xl mb-4">🔍</div>
               <div className="text-xl text-gray-300 font-medium">
-                Nothing found for your search.
+                Tidak ada hasil yang ditemukan untuk pencarian Anda.
               </div>
               <div className="text-gray-400 mt-2">
-                Try different keywords or browse categories
+                Coba kata kunci yang berbeda atau jelajahi kategori
               </div>
             </div>
           </div>
@@ -841,15 +625,12 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                 <div className="relative p-6">
                   <div className="flex items-center mb-4">
                     <div className="bg-gradient-to-br from-blue-500 to-purple-500 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <FaFileAlt className="text-2xl text-white" />
+                      <FileText className="text-2xl text-white" />
                     </div>
                     <div className="ml-4 flex-1 min-w-0">
                       <p className="font-bold text-xl text-white mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors truncate">
                         {file.name}
                       </p>
-                      {/* <p className="text-sm text-gray-300 bg-slate-800/50 px-2 py-1 rounded-lg inline-block">
-                        Size: {formatFileSize(file.size)}
-                      </p> */}
                     </div>
                   </div>
                   <div className="space-y-2 mb-4">
@@ -870,7 +651,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                         rel="noopener noreferrer"
                         className="bg-green-500/20 backdrop-blur-sm p-3 rounded-xl border border-green-500/30 text-green-400 hover:text-green-300 hover:bg-green-500/30 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-green-500/25"
                       >
-                        <AiOutlineWhatsApp className="text-xl" />
+                        <MessageCircle className="w-4 h-4" />
                       </a>
                     </div>
                     <div className="flex space-x-3">
@@ -880,20 +661,20 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                         href={file.gdriveUrl}
                         className="bg-violet-500/20 backdrop-blur-sm p-3 rounded-xl border border-violet-500/30 text-violet-400 hover:text-blue-300 hover:bg-blue-500/30 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-blue-500/25"
                       >
-                        <FaEye   className="text-lg" />
+                        <Eye className="w-4 h-4" />
                       </a>
                       <button
                         onClick={() => handleCopyUrl(fileUrl, file.name)}
                         className="bg-yellow-500/20 backdrop-blur-sm p-3 rounded-xl border border-yellow-500/30 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/30 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-yellow-500/25"
                       >
-                        <FaCopy className="text-lg" />
+                        <Copy className="w-4 h-4" />
                       </button>
                       <a
                         href={fileUrl}
                         className="bg-blue-500/20 backdrop-blur-sm p-3 rounded-xl border border-blue-500/30 text-blue-400 hover:text-blue-300 hover:bg-blue-500/30 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-blue-500/25"
                         download
                       >
-                        <FaDownload className="text-lg" />
+                        <Download className="w-4 h-4" />
                       </a>
                     </div>
                     

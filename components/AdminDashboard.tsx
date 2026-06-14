@@ -27,8 +27,8 @@ export default function AdminDashboard({ session }: { session: any }) {
       console.error("Failed to fetch emails:", error);
       Swal.fire({
         icon: 'error',
-        title: 'Fetch Error',
-        text: 'Could not load the list of authorized emails.',
+        title: 'Kesalahan Pengambilan',
+        text: 'Tidak dapat memuat daftar email yang diotorisasi.',
         background: '#1e293b',
         color: '#fff',
         confirmButtonColor: '#ef4444'
@@ -63,7 +63,7 @@ export default function AdminDashboard({ session }: { session: any }) {
     } catch (error: any) {
         Swal.fire({
             icon: 'error',
-            title: 'Submission Error',
+            title: 'Kesalahan Pengiriman',
             text: error.message,
             background: '#1e293b',
             color: '#fff',
@@ -76,13 +76,13 @@ export default function AdminDashboard({ session }: { session: any }) {
 
   const handleDeleteEmail = async (emailToDelete: string) => {
     const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: `You are about to delete ${emailToDelete}`,
+      title: 'Apakah Anda yakin?',
+      text: `Anda akan menghapus ${emailToDelete}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#3b82f6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Ya, hapus!',
       background: '#1e293b',
       color: '#fff'
     });
@@ -103,7 +103,7 @@ export default function AdminDashboard({ session }: { session: any }) {
       } catch (error: any) {
         Swal.fire({
             icon: 'error',
-            title: 'Deletion Error',
+            title: 'Kesalahan Penghapusan',
             text: error.message,
             background: '#1e293b',
             color: '#fff',
@@ -124,13 +124,13 @@ export default function AdminDashboard({ session }: { session: any }) {
                 <Image src={session.user.image!} alt="Admin Avatar" width={60} height={60} className="relative rounded-full border-2 border-slate-700"/>
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">Admin Dashboard</h1>
-              <p className="text-purple-400 flex items-center gap-2 text-sm sm:text-base"><ShieldCheck size={16}/> Super Admin Access</p>
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">Dasbor Admin</h1>
+              <p className="text-purple-400 flex items-center gap-2 text-sm sm:text-base"><ShieldCheck size={16}/> Akses Super Admin</p>
             </div>
           </div>
           <button onClick={() => signOut()} className="group relative w-full sm:w-auto px-6 py-3 bg-slate-800/50 hover:bg-red-600/50 text-white rounded-2xl transition-all duration-300 transform hover:scale-105 border border-slate-600/50 hover:border-red-500/50 flex items-center justify-center gap-3">
             <LogOut className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" />
-            <span className="font-semibold">Sign Out</span>
+            <span className="font-semibold">Keluar</span>
           </button>
         </header>
 
@@ -147,7 +147,7 @@ export default function AdminDashboard({ session }: { session: any }) {
                 <div className="p-2 bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg">
                     <UserPlus className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-xl font-bold text-white">Add New Authorized Email</h2>
+                <h2 className="text-xl font-bold text-white">Tambahkan Email Resmi Baru</h2>
               </div>
               <form onSubmit={handleAddEmail} className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-grow">
@@ -167,7 +167,7 @@ export default function AdminDashboard({ session }: { session: any }) {
                     className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:from-slate-600 disabled:to-slate-600 px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 disabled:transform-none shadow-lg shadow-purple-500/20"
                 >
                     {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <UserPlus size={18}/>}
-                    <span>{isSubmitting ? 'Adding...' : 'Add Email'}</span>
+                    <span>{isSubmitting ? 'Menambahkan...' : 'Tambah Email'}</span>
                 </button>
               </form>
             </div>
@@ -177,7 +177,7 @@ export default function AdminDashboard({ session }: { session: any }) {
                     <div className="p-2 bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg">
                         <ListChecks className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className="text-xl font-bold text-white">Authorized User List</h2>
+                    <h2 className="text-xl font-bold text-white">Daftar Pengguna Resmi</h2>
                 </div>
                 {isLoading ? (
                     <div className="space-y-3">
@@ -219,8 +219,8 @@ export default function AdminDashboard({ session }: { session: any }) {
                                 <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                     <ListChecks className="w-8 h-8 text-slate-500" />
                                 </div>
-                                <h3 className="text-lg font-semibold text-slate-300">No Authorized Emails</h3>
-                                <p className="text-slate-500">Add an email above to grant access.</p>
+                                <h3 className="text-lg font-semibold text-slate-300">Tidak Ada Email Resmi</h3>
+                                <p className="text-slate-500">Tambahkan email di atas untuk memberikan akses.</p>
                             </motion.div>
                         )}
                     </AnimatePresence>

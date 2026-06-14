@@ -63,7 +63,7 @@ const Unauthorized = () => {
               <div className="space-y-4">
                 <h1 className="text-5xl md:text-6xl font-bold">
                   <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
-                    Access Denied
+                    Akses Ditolak
                   </span>
                 </h1>
                 
@@ -86,19 +86,19 @@ const Unauthorized = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mt-12">
                 <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 group hover:bg-slate-800/70 transition-all duration-300">
                   <Lock className="w-8 h-8 text-red-400 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                  <h3 className="font-semibold text-white mb-2">Protected</h3>
+                  <h3 className="font-semibold text-white mb-2">Terlindungi</h3>
                   <p className="text-sm text-slate-400">Halaman ini dilindungi</p>
                 </div>
 
                 <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 group hover:bg-slate-800/70 transition-all duration-300">
                   <Shield className="w-8 h-8 text-orange-400 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                  <h3 className="font-semibold text-white mb-2">Secure</h3>
+                  <h3 className="font-semibold text-white mb-2">Aman</h3>
                   <p className="text-sm text-slate-400">Akses terbatas</p>
                 </div>
 
                 <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 group hover:bg-slate-800/70 transition-all duration-300">
                   <AlertTriangle className="w-8 h-8 text-yellow-400 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                  <h3 className="font-semibold text-white mb-2">Restricted</h3>
+                  <h3 className="font-semibold text-white mb-2">Terbatas</h3>
                   <p className="text-sm text-slate-400">Perlu otorisasi</p>
                 </div>
               </div>

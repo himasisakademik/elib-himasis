@@ -1,9 +1,6 @@
 // globals.d.ts
-declare module 'aos';
 declare module 'uuid';
-declare module 'react-icons/fa';
 declare module 'sweetalert2';
-declare module 'react-spinners';
 declare module 'react-turnstile';
 declare module 'next-auth/react';
 declare module 'next-auth/middleware';

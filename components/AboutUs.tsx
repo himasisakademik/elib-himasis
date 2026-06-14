@@ -4,27 +4,27 @@ import Image from "next/image";
 
 const textArray = [
   {
-    title: "Academic Excellence",
-    text: "Himasis E-library is dedicated to providing access to premium academic resources for students in the Himasis community.",
+    title: "Keunggulan Akademik",
+    text: "E-library Himasis berdedikasi untuk memberikan akses ke sumber daya akademik premium bagi mahasiswa di komunitas Himasis.",
     icon: "🎓"
   },
   {
-    title: "Learning Innovation",
-    text: "We strive to make learning easier and more efficient with our vast collection of educational materials and cutting-edge technology.",
+    title: "Inovasi Pembelajaran",
+    text: "Kami berusaha untuk membuat pembelajaran menjadi lebih mudah dan efisien dengan koleksi materi pendidikan yang luas dan teknologi mutakhir kami.",
     icon: "💡"
   },
   {
-    title: "Community Growth",
-    text: "Empowering students through collaborative learning and comprehensive digital resources that foster academic success.",
+    title: "Pertumbuhan Komunitas",
+    text: "Memberdayakan mahasiswa melalui pembelajaran kolaboratif dan sumber daya digital komprehensif yang mendorong kesuksesan akademik.",
     icon: "🌱"
   }
 ];
 
 const stats = [
-  { number: "30+", label: "Digital Books", icon: "📚" },
+  { number: "30+", label: "Buku Digital", icon: "📚" },
   // { number: "500+", label: "Research Papers", icon: "📄" },
-  { number: "100+", label: "Active Users", icon: "👥" },
-  { number: "20", label: "Study Categories", icon: "🗂️" }
+  { number: "100+", label: "Pengguna Aktif", icon: "👥" },
+  { number: "20", label: "Kategori Pembelajaran", icon: "🗂️" }
 ];
 
 const AboutUs = () => {
@@ -106,11 +106,11 @@ const AboutUs = () => {
           </div>
           
           <h2 className="text-5xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-6">
-            About Us
+            Tentang Kami
           </h2>
           
           <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Discover the story behind Himasis E-Library and our mission to revolutionize digital learning
+            Temukan cerita di balik E-Library Himasis dan misi kami untuk merevolusi pembelajaran digital
           </p>
         </motion.div>
 
@@ -138,7 +138,7 @@ const AboutUs = () => {
               </div>
               
               <div className="absolute -top-4 -right-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg border border-white/20">
-                Since 2024
+                Sejak 2024
               </div>
             </div>
           </motion.div>
@@ -190,7 +190,7 @@ const AboutUs = () => {
         {/* <motion.div className="mt-20" variants={itemVariants}>
           <div className="bg-slate-800/30 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/30 shadow-2xl">
             <h3 className="text-2xl font-bold text-center mb-12 bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
-              Our Impact in Numbers
+              Dampak Kami dalam Angka
             </h3>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -228,8 +228,8 @@ const AboutUs = () => {
             </div>
             
             <blockquote className="text-2xl text-slate-200 leading-relaxed italic mb-6">
-              "Empowering minds, enriching futures. We believe that access to quality education should be limitless, 
-              and every student deserves the tools to achieve their academic dreams."
+              "Memberdayakan pikiran, memperkaya masa depan. Kami percaya bahwa akses ke pendidikan berkualitas harus tanpa batas, 
+              dan setiap mahasiswa berhak mendapatkan alat untuk meraih impian akademik mereka."
             </blockquote>
             
             <div className="text-blue-400 font-semibold">

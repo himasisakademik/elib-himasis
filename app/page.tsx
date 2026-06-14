@@ -1,51 +1,61 @@
 "use client";
-import React, { useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";  
+
+import React from "react";
+import { motion } from "framer-motion";
 import Header from "../components/Header";
 import CategoryList from "../components/CategoryList";
 import AboutUs from "../components/AboutUs";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
-import HomePage from "../components/HomePage";  
+import HomePage from "../components/HomePage";
+
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
 
 const Page = () => {
-  useEffect(() => {
-    AOS.init({
-      offset: 200,
-      duration: 1000,
-      easing: "ease-in-out",
-      delay: 100,
-    });
-
-    document.body.style.overflow = "visible";
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  const category = "matkul";  
+  const category = "matkul";
 
   return (
     <div className="bg-gray-900 text-white">
       <Header />
 
       <div className="bg-gray-900 text-white">
+        <HomePage />
 
-        <HomePage /> 
-
-        <section className="py-16" data-aos="fade-up" data-aos-duration="1000">
+        <motion.section
+          className="py-16"
+          variants={fadeUpVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           <AboutUs />
-        </section>
+        </motion.section>
 
-        <section className="py-16" data-aos="fade-up" data-aos-duration="1000">
+        <motion.section
+          className="py-16"
+          variants={fadeUpVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           <CategoryList category={category} />
-        </section>
+        </motion.section>
 
-        <section data-aos="fade-up" data-aos-duration="1000">
+        <motion.section
+          variants={fadeUpVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           <ContactForm />
-        </section>
+        </motion.section>
       </div>
 
       <Footer />

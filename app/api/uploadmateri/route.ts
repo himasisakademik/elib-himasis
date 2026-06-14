@@ -397,62 +397,38 @@
 
       const metadataFiles = await readdir(jsonDir);
 
-      const fileList: any[] = [];
-
-      for (const metadataFile of metadataFiles) {
-        if (!metadataFile.endsWith(".json")) continue;
+      const filePromises = metadataFiles.map(async (metadataFile) => {
+        if (!metadataFile.endsWith(".json")) return null;
 
         try {
           const metadataPath = join(jsonDir, metadataFile);
+          const metadataContent = await readFile(metadataPath, "utf-8");
+          const metadata: Metadata = JSON.parse(metadataContent);
 
-          const metadataContent = await readFile(
-            metadataPath,
-            "utf-8"
-          );
+          if (metadata.category !== category) return null;
 
-          const metadata: Metadata =
-            JSON.parse(metadataContent);
-
-          if (metadata.category !== category) continue;
-
-          fileList.push({
+          return {
             name: metadata.name || "-",
             mataKuliah: metadata.mataKuliah || "-",
             semester: metadata.semester || "-",
             penyusun: metadata.penyusun || "-",
             tahun: metadata.tahun || "-",
-
             uploadTime: metadata.uploadTime || "-",
-
             gdriveUrl: metadata.gdriveUrl || "",
             downloadUrl: metadata.downloadUrl || "",
-
             size: metadata.fileSize || "-",
-
             penerbit: metadata.penerbit || "-",
             tahunTerbit: metadata.tahunTerbit || "-",
             deskripsi: metadata.deskripsi || "-",
-
-            // judulJurnal: metadata.judulJurnal || "-",
-            // penulisJurnal: metadata.penulisJurnal || "-",
-            // penerbitJurnal: metadata.penerbitJurnal || "-",
-            // tahunJurnal: metadata.tahunJurnal || "-",
-            // asalJurnal: metadata.asalJurnal || "-",
-
-            // judulTA: metadata.judulTA || "-",
-            // namaTA: metadata.namaTA || "-",
-            // tahunTA: metadata.tahunTA || "-",
-
-            // `/api/downloadmateri?file=${encodeURIComponent(file)}&category=${encodeURIComponent(category)}`
-          });
+          };
         } catch (err) {
-          console.error(
-            "Error reading metadata:",
-            metadataFile,
-            err
-          );
+          console.error("Error reading metadata:", metadataFile, err);
+          return null;
         }
-      }
+      });
+
+      const results = await Promise.all(filePromises);
+      const fileList = results.filter((item) => item !== null);
 
       return NextResponse.json(fileList);
     } catch (error) {

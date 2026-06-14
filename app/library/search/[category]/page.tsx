@@ -11,7 +11,7 @@ const CategoryPage = () => {
   const categoryString = Array.isArray(category) ? category[0] : category;
 
   if (!categoryString) {
-    return <div>Wait kakk...</div>;
+    return <div>Tunggu sebentar kakk...</div>;
   }
 
   return (
