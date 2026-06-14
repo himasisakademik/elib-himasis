@@ -1,12 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Swal from "sweetalert2";
-import { RingLoader } from "react-spinners";
 import Turnstile from 'react-turnstile';
-
-const BOT_TOKEN = "7912546836:AAFJdVBine0LCw6YIvETwNJghrbeR_NUAyQ";
-const CHAT_IDS = ["6845416845", "8147971565", "1331042288", "6360232938", "1365766425", "7288193090", "6200404177"];  
-const TELEGRAM_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
 const initialFormData = {
   name: "",
@@ -26,6 +20,12 @@ interface InputFieldProps {
   maxLength?: number;
   icon: React.ReactNode;
 }
+
+// Dynamic import SweetAlert2 only when needed
+const showAlert = async (options: Record<string, unknown>) => {
+  const Swal = (await import("sweetalert2")).default;
+  return Swal.fire(options);
+};
 
 const InputField: React.FC<InputFieldProps> = ({ type, name, value, onChange, placeholder, maxLength, icon }) => (
   <div className="relative group">
@@ -65,9 +65,9 @@ const ContactForm = () => {
     setIsLoading(true);
 
     if (!token) {
-      Swal.fire({
+      await showAlert({
         title: "Error!",
-        text: "Please complete the CAPTCHA.",
+        text: "Harap selesaikan CAPTCHA.",
         icon: "error",
         confirmButtonText: "OK",
         customClass: {
@@ -80,13 +80,21 @@ const ContactForm = () => {
     }
 
     try {
-      const message = formatMessage(form);
-      await sendMessageToTelegram(message);
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal mengirim pesan");
+      }
+
       setForm(initialFormData);
       setToken(null);
-      Swal.fire({
+      await showAlert({
         title: "Success!",
-        text: "Your message has been sent successfully, Thank You!",
+        text: "Pesan Anda telah berhasil dikirim, Terima Kasih!",
         icon: "success",
         confirmButtonText: "OK",
         customClass: {
@@ -96,9 +104,9 @@ const ContactForm = () => {
       });
     } catch (error) {
       console.error("Error submitting the form:", error);
-      Swal.fire({
+      await showAlert({
         title: "Error!",
-        text: "There was an error sending your message. Please try again.",
+        text: "Terjadi kesalahan saat mengirim pesan Anda. Silakan coba lagi.",
         icon: "error",
         confirmButtonText: "OK",
         customClass: {
@@ -124,7 +132,7 @@ const ContactForm = () => {
         <div className="absolute bottom-20 right-20 w-1 h-1 bg-blue-400/40 rounded-full animate-ping delay-300" />
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10" data-aos="fade-up" data-aos-duration="1000">
+      <div className="max-w-4xl mx-auto relative z-10">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-600/20 backdrop-blur-xl rounded-2xl mb-6 shadow-lg shadow-blue-500/10 border border-white/10 relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 to-purple-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -133,10 +141,10 @@ const ContactForm = () => {
             </svg>
           </div>
           <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-3">
-            Contact Us
+            Hubungi Kami
           </h2>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
-            Share your thoughts, suggestions, or feedback about E-Library Himasis. We'd love to hear from you!
+            Bagikan pemikiran, saran, atau umpan balik Anda tentang E-Library Himasis. Kami sangat senang mendengarnya dari Anda!
           </p>
         </div>
 
@@ -153,7 +161,7 @@ const ContactForm = () => {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="Your Full Name"
+                placeholder="Nama Lengkap Anda"
                 icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>}
               />
               
@@ -162,7 +170,7 @@ const ContactForm = () => {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="your.email@domain.com"
+                placeholder="email.anda@domain.com"
                 icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>}
               />
             </div>
@@ -173,7 +181,7 @@ const ContactForm = () => {
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                placeholder="Phone Number"
+                placeholder="Nomor Telepon"
                 maxLength={13}
                 icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>}
               />
@@ -183,7 +191,7 @@ const ContactForm = () => {
                 name="nim"
                 value={form.nim}
                 onChange={handleChange}
-                placeholder="Student ID (NIM)"
+                placeholder="NIM"
                 maxLength={10}
                 icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>}
               />
@@ -193,7 +201,7 @@ const ContactForm = () => {
                 name="angkatan"
                 value={form.angkatan}
                 onChange={handleChange}
-                placeholder="Class Year"
+                placeholder="Angkatan"
                 maxLength={4}
                 icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}
               />
@@ -209,7 +217,7 @@ const ContactForm = () => {
                 name="message"
                 value={form.message}
                 onChange={handleChange}
-                placeholder="Share your thoughts, suggestions, or feedback..."
+                placeholder="Bagikan pemikiran, saran, atau umpan balik Anda..."
                 rows={5}
                 className="w-full pl-12 pr-4 py-4 bg-slate-900/50 backdrop-blur-sm border border-slate-600/40 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/60 transition-all duration-300 hover:shadow-xl hover:border-slate-500/60 font-medium text-slate-200 placeholder:text-slate-400 resize-none hover:bg-slate-900/70"
                 required
@@ -243,12 +251,12 @@ const ContactForm = () => {
                   <div className="relative flex items-center justify-center space-x-3">
                     {isLoading ? (
                       <>
-                        <RingLoader size={20} color="#ffffff" />
-                        <span>Sending...</span>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Mengirim...</span>
                       </>
                     ) : (
                       <>
-                        <span>Send Message</span>
+                        <span>Kirim Pesan</span>
                         <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                         </svg>
@@ -263,55 +271,13 @@ const ContactForm = () => {
 
         <div className="text-center mt-8">
           <p className="text-slate-500 text-sm">
-            Your privacy is important to us. All information will be handled securely.
+            Privasi Anda penting bagi kami. Semua informasi akan ditangani secara aman.
           </p>
         </div>
       </div>
       </div>
     </section>
   );
-};
-
-const formatMessage = (formData: typeof initialFormData) => `
-🌟 *Saran / Kritik E-Library-Himasis* 📬
-
-👤 **Name:** ${formData.name}
-📧 **Email:** ${formData.email}
-📱 **Phone:** ${formData.phone}
-🆔 **NIM:** ${formData.nim}
-🎓 **Angkatan:** ${formData.angkatan}
-💬 **Message:** ${formData.message}
-
----
-_Sent via E-Library Contact Form_
-`;
-
-const sendMessageToTelegram = async (message: string) => {
-  const promises = CHAT_IDS.map(async (chatId) => {
-    try {
-      const response = await fetch(TELEGRAM_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "Markdown",
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        console.log(`✅ Message sent to chat ID: ${chatId}`);
-      } else {
-        console.error(`❌ Failed to send message to chat ID: ${chatId}`, data);
-      }
-    } catch (error) {
-      console.error(`💥 Error sending message to chat ID: ${chatId}`, error);
-    }
-  });
-
-  await Promise.allSettled(promises);
 };
 
 export default ContactForm;

@@ -97,7 +97,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             )
           )}
           <div className="sm:hidden px-4 py-2 rounded-xl font-medium bg-slate-700/50 text-gray-300">
-            Page {currentPage} of {totalPages}
+            Halaman {currentPage} dari {totalPages}
           </div>
 
 

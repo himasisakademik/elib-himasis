@@ -2,266 +2,33 @@
 
 import Footer from "./Footer";
 import Header from "./Header";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { handleGoogleSignIn } from "@/lib/auth-actions";
 
-interface ParticleConfig {
-  particles: {
-    number: {
-      value: number;
-      density: {
-        enable: boolean;
-        value_area: number;
-      };
-    };
-    color: {
-      value: string;
-    };
-    shape: {
-      type: string;
-      stroke: {
-        width: number;
-        color: string;
-      };
-      polygon: {
-        nb_sides: number;
-      };
-    };
-    opacity: {
-      value: number;
-      random: boolean;
-      anim: {
-        enable: boolean;
-        speed: number;
-        opacity_min: number;
-        sync: boolean;
-      };
-    };
-    size: {
-      value: number;
-      random: boolean;
-      anim: {
-        enable: boolean;
-        speed: number;
-        size_min: number;
-        sync: boolean;
-      };
-    };
-    line_linked: {
-      enable: boolean;
-      distance: number;
-      color: string;
-      opacity: number;
-      width: number;
-    };
-    move: {
-      enable: boolean;
-      speed: number;
-      direction: string;
-      random: boolean;
-      straight: boolean;
-      out_mode: string;
-      bounce: boolean;
-      attract: {
-        enable: boolean;
-        rotateX: number;
-        rotateY: number;
-      };
-    };
-  };
-  interactivity: {
-    detect_on: string;
-    events: {
-      onhover: {
-        enable: boolean;
-        mode: string;
-      };
-      onclick: {
-        enable: boolean;
-        mode: string;
-      };
-      resize: boolean;
-    };
-    modes: {
-      grab: {
-        distance: number;
-        line_linked: {
-          opacity: number;
-        };
-      };
-      bubble: {
-        distance: number;
-        size: number;
-        duration: number;
-        opacity: number;
-        speed: number;
-      };
-      repulse: {
-        distance: number;
-        duration: number;
-      };
-      push: {
-        particles_nb: number;
-      };
-      remove: {
-        particles_nb: number;
-      };
-    };
-  };
-  retina_detect: boolean;
-}
-
 const Login = () => {
-  const particlesRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [particlesLoaded, setParticlesLoaded] = useState(false);
-
-  useEffect(() => {
-    const loadParticles = async () => {
-      try {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js';
-        script.async = true;
-        
-        script.onload = () => {
-          if (typeof (window as any).particlesJS !== 'undefined') {
-            const particlesConfig: ParticleConfig = {
-              particles: {
-                number: {
-                  value: 80,
-                  density: {
-                    enable: true,
-                    value_area: 800
-                  }
-                },
-                color: {
-                  value: "#6366f1"
-                },
-                shape: {
-                  type: "circle",
-                  stroke: {
-                    width: 0,
-                    color: "#000000"
-                  },
-                  polygon: {
-                    nb_sides: 5
-                  }
-                },
-                opacity: {
-                  value: 0.3,
-                  random: true,
-                  anim: {
-                    enable: true,
-                    speed: 1,
-                    opacity_min: 0.1,
-                    sync: false
-                  }
-                },
-                size: {
-                  value: 2,
-                  random: true,
-                  anim: {
-                    enable: true,
-                    speed: 1,
-                    size_min: 0.1,
-                    sync: false
-                  }
-                },
-                line_linked: {
-                  enable: true,
-                  distance: 120,
-                  color: "#8b5cf6",
-                  opacity: 0.2,
-                  width: 1
-                },
-                move: {
-                  enable: true,
-                  speed: 1.5,
-                  direction: "none",
-                  random: false,
-                  straight: false,
-                  out_mode: "out",
-                  bounce: false,
-                  attract: {
-                    enable: false,
-                    rotateX: 600,
-                    rotateY: 1200
-                  }
-                }
-              },
-              interactivity: {
-                detect_on: "canvas",
-                events: {
-                  onhover: {
-                    enable: true,
-                    mode: "bubble"
-                  },
-                  onclick: {
-                    enable: true,
-                    mode: "repulse"
-                  },
-                  resize: true
-                },
-                modes: {
-                  grab: {
-                    distance: 140,
-                    line_linked: {
-                      opacity: 1
-                    }
-                  },
-                  bubble: {
-                    distance: 200,
-                    size: 6,
-                    duration: 2,
-                    opacity: 0.6,
-                    speed: 3
-                  },
-                  repulse: {
-                    distance: 150,
-                    duration: 0.4
-                  },
-                  push: {
-                    particles_nb: 4
-                  },
-                  remove: {
-                    particles_nb: 2
-                  }
-                }
-              },
-              retina_detect: true
-            };
-
-            (window as any).particlesJS('particles-js', particlesConfig);
-            setParticlesLoaded(true);
-          }
-        };
-
-        script.onerror = () => {
-          console.warn('Failed to load particles.js');
-        };
-
-        document.head.appendChild(script);
-
-        return () => {
-          if (document.head.contains(script)) {
-            document.head.removeChild(script);
-          }
-        };
-      } catch (error) {
-        console.warn('Error loading particles:', error);
-      }
-    };
-
-    loadParticles();
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      <div 
-        id="particles-js" 
-        className="absolute inset-0 w-full h-full z-0"
-        ref={particlesRef}
-      />
+      {/* Lightweight CSS particles replacing heavy particles.js CDN injection */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full animate-pulse"
+            style={{
+              width: `${Math.random() * 3 + 1}px`,
+              height: `${Math.random() * 3 + 1}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              backgroundColor: i % 3 === 0 ? '#6366f1' : i % 3 === 1 ? '#8b5cf6' : '#a78bfa',
+              opacity: Math.random() * 0.4 + 0.1,
+              animationDuration: `${Math.random() * 4 + 3}s`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
+      </div>
       
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-transparent z-10" />
       <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-slate-900/50 to-transparent z-10" />
@@ -286,7 +53,7 @@ const Login = () => {
               
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
-                  Welcome Back
+                  Selamat Datang Kembali
                 </span>
               </h1>
               
@@ -337,7 +104,7 @@ const Login = () => {
                         {isLoading ? (
                           <>
                             <div className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
-                            <span>Connecting...</span>
+                            <span>Menghubungkan...</span>
                           </>
                         ) : (
                           <>
@@ -347,7 +114,7 @@ const Login = () => {
                               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                             </svg>
-                            <span className="text-lg">Continue with Google</span>
+                            <span className="text-lg">Lanjutkan dengan Google</span>
                           </>
                         )}
                       </span>
@@ -362,7 +129,7 @@ const Login = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                           </svg>
                         </div>
-                        <p className="text-xs text-slate-400 font-medium">Secure Access</p>
+                        <p className="text-xs text-slate-400 font-medium">Akses Aman</p>
                       </div>
                       <div className="group">
                         <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center mx-auto mb-2 group-hover:bg-purple-500/20 transition-colors duration-300">
@@ -370,19 +137,19 @@ const Login = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                           </svg>
                         </div>
-                        <p className="text-xs text-slate-400 font-medium">Fast Login</p>
+                        <p className="text-xs text-slate-400 font-medium">Login Cepat</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-center space-x-2 mt-8">
-                    <div className={`w-2 h-2 rounded-full transition-all duration-500 ${particlesLoaded ? 'bg-green-400 shadow-md shadow-green-400/50' : 'bg-slate-500 animate-pulse'}`} />
-                    <div className={`w-2 h-2 rounded-full transition-all duration-500 delay-75 ${particlesLoaded ? 'bg-blue-400 shadow-md shadow-blue-400/50' : 'bg-slate-500 animate-pulse'}`} />
-                    <div className={`w-2 h-2 rounded-full transition-all duration-500 delay-150 ${particlesLoaded ? 'bg-purple-400 shadow-md shadow-purple-400/50' : 'bg-slate-500 animate-pulse'}`} />
+                    <div className="w-2 h-2 rounded-full bg-green-400 shadow-md shadow-green-400/50" />
+                    <div className="w-2 h-2 rounded-full bg-blue-400 shadow-md shadow-blue-400/50" />
+                    <div className="w-2 h-2 rounded-full bg-purple-400 shadow-md shadow-purple-400/50" />
                   </div>
                   
                   <p className="text-center text-xs text-slate-500 mt-3">
-                    {particlesLoaded ? 'System Ready' : 'Initializing...'}
+                    Sistem Siap
                   </p>
                 </div>
               </div>

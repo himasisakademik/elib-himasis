@@ -1,14 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   experimental: {
     serverActions: {
       bodySizeLimit: "20mb",
     },
   },
   images: {
-    domains: ["lh3.googleusercontent.com", "i.pravatar.cc"], // Tambahkan domain Google
+    remotePatterns: [
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      { protocol: "https", hostname: "i.pravatar.cc" },
+    ],
   },
 };
 

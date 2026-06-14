@@ -5,15 +5,15 @@ import { motion, useInView, useAnimation } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link'; 
 import { 
-  FaTwitter, 
-  FaFacebook, 
-  FaInstagram, 
-  FaYoutube, 
-  FaTiktok, 
-  FaSpotify,
-  FaArrowUp,
-  FaHeart
-} from 'react-icons/fa';
+  Twitter, 
+  Facebook, 
+  Instagram, 
+  Youtube, 
+  Music2 as Tiktok, 
+  Podcast as Spotify,
+  ArrowUp,
+  Heart
+} from 'lucide-react';
 
 interface NavigationLink {
   href: string;
@@ -34,7 +34,7 @@ const navigationLinks: NavigationLink[] = [
   {
     href: "/library/search/matkul",
     label: "Ikhtisar Materi Kuliah",
-    description: "Course Materials",
+    description: "Materi Kuliah",
     icon: "📚"
   },
   // {
@@ -52,7 +52,7 @@ const navigationLinks: NavigationLink[] = [
   {
     href: "/library/search/umum",
     label: "Umum",
-    description: "General Resources",
+    description: "Sumber Umum",
     icon: "📖"
   },
 ];
@@ -60,42 +60,42 @@ const navigationLinks: NavigationLink[] = [
 const socialLinks: SocialLink[] = [
   {
     href: "https://x.com/himasis_stmi?t=K1Gn17jjkm8VtfHCLH53Qw&s=09",
-    icon: FaTwitter,
+    icon: Twitter,
     label: "Twitter",
     color: "hover:text-blue-400",
     hoverColor: "group-hover:shadow-blue-400/25"
   },
   {
     href: "https://www.facebook.com/share/1ALjti5EsX/",
-    icon: FaFacebook,
+    icon: Facebook,
     label: "Facebook",
     color: "hover:text-blue-600",
     hoverColor: "group-hover:shadow-blue-600/25"
   },
   {
     href: "https://www.instagram.com/himasis.poltekstmi?igsh=eWV2ZGIwbXo3b294",
-    icon: FaInstagram,
+    icon: Instagram,
     label: "Instagram",
     color: "hover:text-pink-500",
     hoverColor: "group-hover:shadow-pink-500/25"
   },
   {
     href: "https://youtube.com/@himasis?si=KgqAFCt6tLWudTd2",
-    icon: FaYoutube,
+    icon: Youtube,
     label: "YouTube",
     color: "hover:text-red-500",
     hoverColor: "group-hover:shadow-red-500/25"
   },
   {
     href: "https://www.tiktok.com/@himasis.poltekstmi",
-    icon: FaTiktok,
+    icon: Tiktok,
     label: "TikTok",
     color: "hover:text-gray-800",
     hoverColor: "group-hover:shadow-gray-800/25"
   },
   {
     href: "https://open.spotify.com/show/0lS1dBg7hpyo1wTVCiikxa?si=sa5QhNBcT26s8v15MKH7YQ",
-    icon: FaSpotify,
+    icon: Spotify,
     label: "Spotify",
     color: "hover:text-green-500",
     hoverColor: "group-hover:shadow-green-500/25"
@@ -212,7 +212,7 @@ const Footer: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              Empowering the next generation of information systems professionals through innovation, collaboration, and excellence.
+              Memberdayakan generasi profesional sistem informasi berikutnya melalui inovasi, kolaborasi, dan keunggulan.
             </motion.p>
           </motion.div>
 
@@ -223,7 +223,7 @@ const Footer: React.FC = () => {
             >
               <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 flex items-center gap-3 justify-center sm:justify-start">
                 <span className="w-1.5 sm:w-2 h-6 sm:h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full" />
-                Quick Links
+                Tautan Cepat
               </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -269,7 +269,7 @@ const Footer: React.FC = () => {
             >
               <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 flex items-center gap-3 justify-center sm:justify-start">
                 <span className="w-1.5 sm:w-2 h-6 sm:h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full" />
-                Connect With Us
+                Terhubung Dengan Kami
               </h3>
               
               <div className="flex flex-wrap gap-3 sm:gap-4 mb-8 justify-center">
@@ -298,14 +298,14 @@ const Footer: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
-                <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-center">Stay Updated</h4>
+                <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-center">Tetap Terkini</h4>
                 <p className="text-sm text-gray-300 text-center mb-4 sm:mb-6 px-2">
-                  Get the latest updates and resources delivered to your inbox.
+                  Dapatkan pembaruan dan sumber daya terbaru yang dikirimkan ke kotak masuk Anda.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Masukkan email Anda"
                     className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 text-sm sm:text-base"
                   />
                   <motion.button
@@ -313,7 +313,7 @@ const Footer: React.FC = () => {
                     whileTap={{ scale: 0.98 }}
                     className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg sm:rounded-xl font-medium sm:font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base whitespace-nowrap"
                   >
-                    Subscribe
+                    Berlangganan
                   </motion.button>
                 </div>
               </motion.div>
@@ -332,10 +332,10 @@ const Footer: React.FC = () => {
                 transition={{ delay: 1 }}
               >
                 <p className="text-sm sm:text-base text-gray-300 mb-2">
-                  &copy; {new Date().getFullYear()} HIMASIS. All rights reserved.
+                  &copy; {new Date().getFullYear()} HIMASIS. Hak cipta dilindungi undang-undang.
                 </p>
                 <p className="text-xs sm:text-sm text-gray-400 flex items-center justify-center gap-2">
-                  Made with <FaHeart className="text-red-500 animate-pulse text-xs sm:text-sm" /> by HIMASIS Team
+                  Dibuat dengan <Heart className="text-red-500 animate-pulse w-4 h-4 sm:w-5 sm:h-5 inline mx-1" /> oleh Tim HIMASIS
                 </p>
               </motion.div>
               
@@ -345,7 +345,7 @@ const Footer: React.FC = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.1 }}
               >
-                <span>Development By Akademik Himasis</span>
+                <span>Pengembangan Oleh Akademik Himasis</span>
                 <span className="w-1 h-1 bg-gray-500 rounded-full" />
                 <span>Hi Verse Platform</span>
               </motion.div>
@@ -367,7 +367,7 @@ const Footer: React.FC = () => {
           }}
           transition={{ duration: 0.3 }}
         >
-          <FaArrowUp className="text-sm sm:text-base group-hover:animate-bounce" />
+          <ArrowUp className="text-sm sm:text-base group-hover:animate-bounce" />
         </motion.button>
       </footer>
     </>
