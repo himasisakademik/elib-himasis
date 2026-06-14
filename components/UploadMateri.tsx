@@ -34,61 +34,85 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
-    if (totalPages <= 1) return null;
+const Pagination: FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
+  if (totalPages <= 1) return null;
 
-    const getPaginationItems = () => {
-        const pageNeighbours = 1; 
-        const totalNumbers = (pageNeighbours * 2) + 3;
-        const totalBlocks = totalNumbers + 2;
+  const getPaginationItems = () => {
+    const pageNeighbours = 1;
+    const totalNumbers = pageNeighbours * 2 + 3;
+    const totalBlocks = totalNumbers + 2;
 
-        if (totalPages > totalBlocks) {
-            const startPage = Math.max(2, currentPage - pageNeighbours);
-            const endPage = Math.min(totalPages - 1, currentPage + pageNeighbours);
-            let pages: (number | string)[] = Array.from({ length: (endPage - startPage) + 1 }, (_, i) => startPage + i);
+    if (totalPages > totalBlocks) {
+      const startPage = Math.max(2, currentPage - pageNeighbours);
+      const endPage = Math.min(totalPages - 1, currentPage + pageNeighbours);
+      let pages: (number | string)[] = Array.from(
+        { length: endPage - startPage + 1 },
+        (_, i) => startPage + i,
+      );
 
-            const hasLeftSpill = startPage > 2;
-            const hasRightSpill = (totalPages - endPage) > 1;
-            const spillOffset = totalNumbers - (pages.length + 1);
+      const hasLeftSpill = startPage > 2;
+      const hasRightSpill = totalPages - endPage > 1;
+      const spillOffset = totalNumbers - (pages.length + 1);
 
-            switch (true) {
-                case (hasLeftSpill && !hasRightSpill): {
-                    const extraPages = Array.from({ length: spillOffset + 1 }, (_, i) => startPage - i - 1).reverse();
-                    pages = ["...", ...extraPages, ...pages];
-                    break;
-                }
-                case (!hasLeftSpill && hasRightSpill): {
-                    const extraPages = Array.from({ length: spillOffset + 1 }, (_, i) => endPage + i + 1);
-                    pages = [...pages, ...extraPages, "..."];
-                    break;
-                }
-                case (hasLeftSpill && hasRightSpill):
-                default: {
-                    pages = ["...", ...pages, "..."];
-                    break;
-                }
-            }
-            return [1, ...pages, totalPages];
+      switch (true) {
+        case hasLeftSpill && !hasRightSpill: {
+          const extraPages = Array.from(
+            { length: spillOffset + 1 },
+            (_, i) => startPage - i - 1,
+          ).reverse();
+          pages = ["...", ...extraPages, ...pages];
+          break;
         }
-        return Array.from({ length: totalPages }, (_, i) => i + 1);
-    };
+        case !hasLeftSpill && hasRightSpill: {
+          const extraPages = Array.from(
+            { length: spillOffset + 1 },
+            (_, i) => endPage + i + 1,
+          );
+          pages = [...pages, ...extraPages, "..."];
+          break;
+        }
+        case hasLeftSpill && hasRightSpill:
+        default: {
+          pages = ["...", ...pages, "..."];
+          break;
+        }
+      }
+      return [1, ...pages, totalPages];
+    }
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  };
 
-    const pages = getPaginationItems();
+  const pages = getPaginationItems();
 
-    return (
-        <div className="flex justify-center items-center gap-2 mt-6 sm:mt-8 flex-wrap">
-            {pages.map((page, index) => {
-                if (typeof page === 'string') {
-                    return <span key={`${page}-${index}`} className="px-3 sm:px-4 py-2 text-slate-400">...</span>;
-                }
-                return (
-                    <button key={page} onClick={() => onPageChange(page)} className={`px-3 sm:px-4 py-2 rounded-xl transition-all duration-300 ${ currentPage === page ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25' : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 hover:text-white' }`}>
-                        {page}
-                    </button>
-                );
-            })}
-        </div>
-    );
+  return (
+    <div className="flex justify-center items-center gap-2 mt-6 sm:mt-8 flex-wrap">
+      {pages.map((page, index) => {
+        if (typeof page === "string") {
+          return (
+            <span
+              key={`${page}-${index}`}
+              className="px-3 sm:px-4 py-2 text-slate-400"
+            >
+              ...
+            </span>
+          );
+        }
+        return (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`px-3 sm:px-4 py-2 rounded-xl transition-all duration-300 ${currentPage === page ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25" : "bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 hover:text-white"}`}
+          >
+            {page}
+          </button>
+        );
+      })}
+    </div>
+  );
 };
 interface FileData {
   name: string;
@@ -256,6 +280,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [filterSemester, setFilterSemester] = useState<string>("all");
 
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileData | null>(null);
@@ -422,6 +447,15 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
       const droppedFile = acceptedFiles[0];
       setFile(droppedFile);
       setFileName(droppedFile.name);
+
+      const fileInput = document.getElementById(
+        "file-upload-input",
+      ) as HTMLInputElement;
+      if (fileInput) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(droppedFile);
+        fileInput.files = dataTransfer.files;
+      }
     }
   };
 
@@ -542,6 +576,8 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
 
   useEffect(() => {
     fetchFiles();
+    setFilterSemester("all");
+    setCurrentPage(1);
   }, [category]);
 
   const deleteFile = async (fileName: string) => {
@@ -601,6 +637,9 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
   };
 
   const filteredFiles = files.filter((file) => {
+    if (filterSemester !== "all" && file.semester !== filterSemester) {
+      return false;
+    }
     const search = searchQuery.toLowerCase();
     if (!search) return true;
     const check = (val?: string) => val?.toLowerCase().includes(search);
@@ -624,12 +663,12 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     if (sortBy === "dateDesc") {
       sorted.sort(
         (a, b) =>
-          new Date(b.uploadTime).getTime() - new Date(a.uploadTime).getTime()
+          new Date(b.uploadTime).getTime() - new Date(a.uploadTime).getTime(),
       );
     } else if (sortBy === "dateAsc") {
       sorted.sort(
         (a, b) =>
-          new Date(a.uploadTime).getTime() - new Date(b.uploadTime).getTime()
+          new Date(a.uploadTime).getTime() - new Date(b.uploadTime).getTime(),
       );
     } else if (sortBy === "alphaAsc") {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
@@ -752,7 +791,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     return `${
       window.location.origin
     }/api/downloadmateri?file=${encodeURIComponent(
-      fileName
+      fileName,
     )}&category=${encodeURIComponent(category)}`;
   };
 
@@ -1100,7 +1139,11 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                           : "border-slate-600/50 hover:border-blue-500/50 bg-slate-700/30 hover:bg-slate-700/50"
                       }`}
                     >
-                      <input {...getInputProps()} required />
+                      <input
+                        {...getInputProps()}
+                        id="file-upload-input"
+                        required
+                      />
                       <div className="text-center">
                         <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
                           <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
@@ -1209,6 +1252,23 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
+                {category === "matkul" && (
+                  <select
+                    value={filterSemester}
+                    onChange={(e) => { setFilterSemester(e.target.value); setCurrentPage(1); }}
+                    className="px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-transparent transition-all duration-300 animate-fade-in"
+                  >
+                    <option value="all">Semua Semester</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                  </select>
+                )}
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -1255,7 +1315,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                       <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
                         <div
                           className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${getCategoryColor(
-                            category
+                            category,
                           )} rounded-xl flex items-center justify-center flex-shrink-0`}
                         >
                           {getCategoryIcon(category)}
@@ -1389,7 +1449,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                     <div className="flex items-center gap-3 mb-4">
                       <div
                         className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br ${getCategoryColor(
-                          category
+                          category,
                         )} rounded-xl flex items-center justify-center flex-shrink-0`}
                       >
                         {getCategoryIcon(category)}
@@ -1509,10 +1569,10 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
             )}
 
             <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
-              />
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
           </div>
         </main>
 

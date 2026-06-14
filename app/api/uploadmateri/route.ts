@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir, readdir, readFile, rename } from 'fs/promises';
-import { join } from 'path';
-import fs from 'fs';
+import { NextRequest, NextResponse } from "next/server";
+import { writeFile, mkdir, readdir, readFile, rename } from "fs/promises";
+import { join } from "path";
+import fs from "fs";
 
 interface Metadata {
   name: string;
@@ -12,9 +12,9 @@ interface Metadata {
   originalFileName: string;
   fileSize: number;
   uploadTime: string;
-  penerbit?: string;  
-  tahunTerbit?: string;  
-  deskripsi?: string;  
+  penerbit?: string;
+  tahunTerbit?: string;
+  deskripsi?: string;
   judulJurnal?: string;
   penulisJurnal?: string;
   penerbitJurnal?: string;
@@ -25,8 +25,8 @@ interface Metadata {
   tahunTA?: string;
 }
 
-const uploadDir = join(process.cwd(), 'uploads/e-lib');
-const jsonDir = join(uploadDir, 'json');
+const uploadDir = join(process.cwd(), "uploads/e-lib");
+const jsonDir = join(uploadDir, "json");
 
 export const config = {
   api: {
@@ -37,24 +37,30 @@ export const config = {
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get('file') as File;
-    const name = formData.get('name') as string;
-    const mataKuliah = formData.get('mataKuliah') as string;
-    const semester = formData.get('semester') as string;
-    const dosen = formData.get('dosen') as string;
-    const category = formData.get('category') as string;
+    const file = formData.get("file") as File;
+    const name = formData.get("name") as string;
+    const mataKuliah = formData.get("mataKuliah") as string;
+    const semester = formData.get("semester") as string;
+    const dosen = formData.get("dosen") as string;
+    const category = formData.get("category") as string;
 
     if (!file || !name || !category) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
     }
 
     if (category === "umum") {
-      const penerbit = formData.get('penerbit') as string;
-      const tahunTerbit = formData.get('tahun_terbit') as string;
-      const deskripsi = formData.get('deskripsi') as string;
+      const penerbit = formData.get("penerbit") as string;
+      const tahunTerbit = formData.get("tahun_terbit") as string;
+      const deskripsi = formData.get("deskripsi") as string;
 
       if (!penerbit || !tahunTerbit || !deskripsi) {
-        return NextResponse.json({ error: 'Missing required fields for "umum" category' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'Missing required fields for "umum" category' },
+          { status: 400 },
+        );
       }
 
       const metadata: Metadata = {
@@ -81,19 +87,28 @@ export async function POST(request: NextRequest) {
       await writeFile(metadataFilePath, JSON.stringify(metadata));
 
       return NextResponse.json({
-        message: 'File uploaded successfully',
+        message: "File uploaded successfully",
         fileName: file.name,
         ...metadata,
       });
     } else if (category === "jurnal") {
-      const judulJurnal = formData.get('juduljurnal') as string;
-      const penulisJurnal = formData.get('penulisjurnal') as string;
-      const penerbitJurnal = formData.get('penerbitjurnal') as string;
-      const tahunJurnal = formData.get('tahunjurnal') as string;
-      const asalJurnal = formData.get('asaljurnal') as string;
+      const judulJurnal = formData.get("juduljurnal") as string;
+      const penulisJurnal = formData.get("penulisjurnal") as string;
+      const penerbitJurnal = formData.get("penerbitjurnal") as string;
+      const tahunJurnal = formData.get("tahunjurnal") as string;
+      const asalJurnal = formData.get("asaljurnal") as string;
 
-      if (!judulJurnal || !penulisJurnal || !penerbitJurnal || !tahunJurnal || !asalJurnal) {
-        return NextResponse.json({ error: 'Missing required fields for "umum" category' }, { status: 400 });
+      if (
+        !judulJurnal ||
+        !penulisJurnal ||
+        !penerbitJurnal ||
+        !tahunJurnal ||
+        !asalJurnal
+      ) {
+        return NextResponse.json(
+          { error: 'Missing required fields for "umum" category' },
+          { status: 400 },
+        );
       }
 
       const metadata: Metadata = {
@@ -122,17 +137,20 @@ export async function POST(request: NextRequest) {
       await writeFile(metadataFilePath, JSON.stringify(metadata));
 
       return NextResponse.json({
-        message: 'File uploaded successfully',
+        message: "File uploaded successfully",
         fileName: file.name,
         ...metadata,
       });
     } else if (category === "tugas-akhir") {
-      const judulTA = formData.get('judulta') as string;
-      const namaTA = formData.get('namata') as string;
-      const tahunTA = formData.get('tahunta') as string;
+      const judulTA = formData.get("judulta") as string;
+      const namaTA = formData.get("namata") as string;
+      const tahunTA = formData.get("tahunta") as string;
 
       if (!judulTA || !namaTA || !tahunTA) {
-        return NextResponse.json({ error: 'Missing required fields for "umum" category' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'Missing required fields for "umum" category' },
+          { status: 400 },
+        );
       }
 
       const metadata: Metadata = {
@@ -159,11 +177,11 @@ export async function POST(request: NextRequest) {
       await writeFile(metadataFilePath, JSON.stringify(metadata));
 
       return NextResponse.json({
-        message: 'File uploaded successfully',
+        message: "File uploaded successfully",
         fileName: file.name,
         ...metadata,
       });
-    } 
+    }
 
     const metadata: Metadata = {
       name,
@@ -189,13 +207,13 @@ export async function POST(request: NextRequest) {
     await writeFile(metadataFilePath, JSON.stringify(metadata));
 
     return NextResponse.json({
-      message: 'File uploaded successfully',
+      message: "File uploaded successfully",
       fileName: file.name,
       ...metadata,
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
@@ -205,28 +223,29 @@ export async function PUT(request: NextRequest) {
   try {
     const existingMetadataPath = join(jsonDir, `${fileName}.json`);
     let existingMetadata = {};
-    
+
     try {
-      const metadataContent = await readFile(existingMetadataPath, 'utf-8');
+      const metadataContent = await readFile(existingMetadataPath, "utf-8");
       existingMetadata = JSON.parse(metadataContent);
     } catch (error) {
       console.error("Error reading existing metadata:", error);
     }
 
     const oldFilePath = join(uploadDir, updatedData.category, fileName);
-    const newFilePath = join(uploadDir, updatedData.category, updatedData.name); 
+    const newFilePath = join(uploadDir, updatedData.category, updatedData.name);
 
     const metadataFilePath = join(jsonDir, `${fileName}.json`);
     const newMetadataFilePath = join(jsonDir, `${updatedData.name}.json`);
 
-    const preservedUploadTime = updatedData.uploadTime || 
-                               (existingMetadata as any).uploadTime || 
-                               new Date().toISOString();
-    
-    const metadata = { 
-      ...updatedData, 
+    const preservedUploadTime =
+      updatedData.uploadTime ||
+      (existingMetadata as any).uploadTime ||
+      new Date().toISOString();
+
+    const metadata = {
+      ...updatedData,
       originalFileName: updatedData.name,
-      uploadTime: preservedUploadTime
+      uploadTime: preservedUploadTime,
     };
 
     if (fileName !== updatedData.name) {
@@ -240,21 +259,27 @@ export async function PUT(request: NextRequest) {
       await fs.promises.unlink(metadataFilePath);
     }
 
-    return NextResponse.json({ 
-      message: 'File and metadata updated successfully',
-      uploadTime: preservedUploadTime 
+    return NextResponse.json({
+      message: "File and metadata updated successfully",
+      uploadTime: preservedUploadTime,
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Failed to update file and metadata' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update file and metadata" },
+      { status: 500 },
+    );
   }
 }
 
 export async function DELETE(request: NextRequest) {
   const { file, category } = await request.json();
-  
+
   if (!file || !category) {
-    return NextResponse.json({ error: 'Missing file or category parameter' }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing file or category parameter" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -265,71 +290,98 @@ export async function DELETE(request: NextRequest) {
 
     const metadataFilePath = join(jsonDir, `${file}.json`);
     if (fs.existsSync(metadataFilePath)) {
-      fs.unlinkSync(metadataFilePath); 
+      fs.unlinkSync(metadataFilePath);
     }
 
-    return NextResponse.json({ message: 'File deleted successfully' });
+    return NextResponse.json({ message: "File deleted successfully" });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Failed to delete the file' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete the file" },
+      { status: 500 },
+    );
   }
 }
 
-
 export async function GET(request: NextRequest) {
-  const category = request.nextUrl.searchParams.get('category');
+  const category = request.nextUrl.searchParams.get("category");
   if (!category) {
-    return NextResponse.json({ error: 'Category is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: "Category is required" },
+      { status: 400 },
+    );
+  }
+
+  const allowedCategories = ["matkul", "jurnal", "tugas-akhir", "umum"];
+  if (!allowedCategories.includes(category)) {
+    return NextResponse.json({ error: "Invalid category" }, { status: 400 });
   }
 
   const categoryDir = join(uploadDir, category);
 
   try {
+    await mkdir(categoryDir, { recursive: true });
+
     const files = await readdir(categoryDir);
 
     const fileList: any[] = [];
 
     for (const file of files) {
       const filePath = join(categoryDir, file);
-      const stats = fs.statSync(filePath);
+
+      let stats;
+      try {
+        stats = await fs.promises.stat(filePath);
+      } catch {
+        continue;
+      }
 
       if (stats.isFile()) {
         const metadataFilePath = join(jsonDir, `${file}.json`);
-        let metadata: Metadata = { name: '', mataKuliah: '', category: '', originalFileName: '', fileSize: 0, uploadTime: '', dosen: '', semester: '' };
+        let metadata: Metadata = {
+          name: "",
+          mataKuliah: "",
+          category: "",
+          originalFileName: "",
+          fileSize: 0,
+          uploadTime: "",
+          dosen: "",
+          semester: "",
+        };
 
         try {
-          const metadataFile = await readFile(metadataFilePath, 'utf-8');
+          const metadataFile = await readFile(metadataFilePath, "utf-8");
           metadata = JSON.parse(metadataFile);
         } catch (err) {
-          console.error('Error reading metadata for file', file);
+          console.error("Error reading metadata for file", file);
         }
 
         fileList.push({
           name: file,
-          mataKuliah: metadata.mataKuliah || '-',
+          mataKuliah: metadata.mataKuliah || "-",
           size: stats.size,
-          semester: metadata.semester || '-',
-          dosen: metadata.dosen || '-',
-          uploadTime: metadata.uploadTime || '-',
+          semester: metadata.semester || "-",
+          dosen: metadata.dosen || "-",
+          uploadTime: metadata.uploadTime || "-",
           path: `/api/downloadmateri?file=${encodeURIComponent(file)}&category=${encodeURIComponent(category)}`,
-          penerbit: metadata.penerbit || '-', 
-          tahunTerbit: metadata.tahunTerbit || '-', 
-          deskripsi: metadata.deskripsi || '-', 
-          judulJurnal: metadata.judulJurnal || '-', 
-          penulisJurnal: metadata.penulisJurnal || '-', 
-          penerbitJurnal: metadata.penerbitJurnal || '-', 
-          tahunJurnal: metadata.tahunJurnal || '-', 
-          asalJurnal: metadata.asalJurnal || '-', 
-          judulTA: metadata.judulTA || '-', 
-          namaTA: metadata.namaTA || '-', 
-          tahunTA: metadata.tahunTA || '-', 
+          penerbit: metadata.penerbit || "-",
+          tahunTerbit: metadata.tahunTerbit || "-",
+          deskripsi: metadata.deskripsi || "-",
+          judulJurnal: metadata.judulJurnal || "-",
+          penulisJurnal: metadata.penulisJurnal || "-",
+          penerbitJurnal: metadata.penerbitJurnal || "-",
+          tahunJurnal: metadata.tahunJurnal || "-",
+          asalJurnal: metadata.asalJurnal || "-",
+          judulTA: metadata.judulTA || "-",
+          namaTA: metadata.namaTA || "-",
+          tahunTA: metadata.tahunTA || "-",
         });
       }
     }
 
     return NextResponse.json(fileList);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to read files from directory' }, { status: 500 });
+    console.error("Error reading files for category:", category, error);
+    return NextResponse.json([]);
   }
 }
