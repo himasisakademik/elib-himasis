@@ -3,8 +3,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import UploadMateri from "@/components/UploadMateri";
-
-const SUPER_ADMIN_EMAIL = "andryalfarisi015@gmail.com";
+import { SUPER_ADMIN_EMAIL } from "@/lib/admin-config";
 
 const UploadMateriPage = () => {
   const { data: session, status } = useSession();

@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { auth } from '@/auth';
+import { SUPER_ADMIN_EMAIL } from '@/lib/admin-config';
 
 const emailsFilePath = path.join(process.cwd(), 'allowed-emails.json');
-const SUPER_ADMIN_EMAIL = 'andryalfarisi015@gmail.com';
 
 async function getAllowedEmails(): Promise<string[]> {
   try {

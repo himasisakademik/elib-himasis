@@ -2,8 +2,8 @@ import NextAuth, { type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import fs from "fs/promises";
 import path from "path";
+import { SUPER_ADMIN_EMAIL } from "@/lib/admin-config";
 
-const SUPER_ADMIN_EMAIL = "nabilzihni08";
 const emailsFilePath = path.join(process.cwd(), "allowed-emails.json");
 
 async function getAllowedEmails(): Promise<string[]> {

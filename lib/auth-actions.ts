@@ -4,8 +4,8 @@ import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import fs from "fs/promises";
 import path from "path";
+import { SUPER_ADMIN_EMAIL } from "@/lib/admin-config";
 
-const SUPER_ADMIN_EMAIL = "nabilzihni08@gmail.com";
 const emailsFilePath = path.join(process.cwd(), "allowed-emails.json");
 
 async function getAllowedEmails(): Promise<string[]> {

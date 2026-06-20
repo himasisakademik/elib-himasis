@@ -1,8 +1,7 @@
 import { auth } from "@/auth";
 import AdminDashboard from "../../../components/AdminDashboard";
 import { redirect } from "next/navigation";
-
-const SUPER_ADMIN_EMAIL = 'andryalfarisi015@gmail.com';
+import { SUPER_ADMIN_EMAIL } from "@/lib/admin-config";
 
 export default async function AdminDashboardPage() {
   const session = await auth();
