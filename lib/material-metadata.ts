@@ -1,4 +1,4 @@
-import { del, list, put } from "@vercel/blob";
+import { del, get, list, put } from "@vercel/blob";
 import fs from "fs/promises";
 import path from "path";
 import { hasVercelBlobStore } from "@/lib/blob-config";
@@ -55,13 +55,17 @@ async function findBlob(pathname: string) {
   return result.blobs.find((blob) => blob.pathname === pathname) ?? null;
 }
 
-async function readBlobJson<T>(downloadUrl: string): Promise<T> {
-  const response = await fetch(downloadUrl, { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`Failed to read Blob metadata: ${response.status}`);
+async function readBlobJson<T>(pathname: string): Promise<T> {
+  const response = await get(pathname, {
+    access: "private",
+    useCache: false,
+  });
+
+  if (!response || response.statusCode !== 200) {
+    throw new Error(`Failed to read Blob metadata: ${pathname}`);
   }
 
-  return response.json();
+  return new Response(response.stream).json();
 }
 
 async function readLocalMetadataFile(name: string): Promise<MaterialMetadata | null> {
@@ -99,10 +103,11 @@ async function readLocalMetadataList(): Promise<MaterialMetadata[]> {
 
 async function putBlobMetadata(metadata: MaterialMetadata) {
   await put(metadataBlobPath(metadata.name), JSON.stringify(metadata, null, 2), {
-    access: "public",
+    access: "private",
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: "application/json",
-    cacheControlMaxAge: 0,
+    cacheControlMaxAge: 60,
   });
 }
 
@@ -111,10 +116,11 @@ async function markBlobInitialized() {
     blobMarkerPath,
     JSON.stringify({ initializedAt: new Date().toISOString() }, null, 2),
     {
-      access: "public",
+      access: "private",
       addRandomSuffix: false,
+      allowOverwrite: true,
       contentType: "application/json",
-      cacheControlMaxAge: 0,
+      cacheControlMaxAge: 60,
     }
   );
 }
@@ -136,7 +142,7 @@ export async function getMaterialMetadata(name: string): Promise<MaterialMetadat
     const blob = await findBlob(metadataBlobPath(name));
     if (!blob) return null;
 
-    return readBlobJson<MaterialMetadata>(blob.downloadUrl);
+    return readBlobJson<MaterialMetadata>(blob.pathname);
   }
 
   return readLocalMetadataFile(name);
@@ -153,7 +159,7 @@ export async function listMaterialMetadata(category: string): Promise<MaterialMe
     const metadata = await Promise.all(
       metadataBlobs.map(async (blob) => {
         try {
-          return await readBlobJson<MaterialMetadata>(blob.downloadUrl);
+          return await readBlobJson<MaterialMetadata>(blob.pathname);
         } catch (error) {
           console.error("Failed to read Blob material metadata:", blob.pathname, error);
           return null;
@@ -201,7 +207,7 @@ export async function deleteMaterialMetadata(name: string): Promise<boolean> {
     const blob = await findBlob(metadataBlobPath(name));
     if (!blob) return false;
 
-    await del(blob.url);
+    await del(blob.pathname);
     return true;
   }
 

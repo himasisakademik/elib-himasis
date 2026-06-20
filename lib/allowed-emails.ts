@@ -1,4 +1,4 @@
-import { list, put } from "@vercel/blob";
+import { get, list, put } from "@vercel/blob";
 import fs from "fs/promises";
 import path from "path";
 import { blobMissingMessage, hasVercelBlobStore } from "@/lib/blob-config";
@@ -39,12 +39,14 @@ async function readBlobAllowedEmails(): Promise<string[] | null> {
 
   if (!blob) return null;
 
-  const response = await fetch(blob.downloadUrl, { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`Failed to read allowed emails from Blob: ${response.status}`);
-  }
+  const response = await get(blob.pathname, {
+    access: "private",
+    useCache: false,
+  });
 
-  return normalizeEmails(await response.json());
+  if (!response || response.statusCode !== 200) return null;
+
+  return normalizeEmails(await new Response(response.stream).json());
 }
 
 export async function getAllowedEmails(): Promise<string[]> {
@@ -61,10 +63,11 @@ export async function writeAllowedEmails(emails: string[]): Promise<string[]> {
 
   if (hasVercelBlobStore()) {
     await put(blobEmailsPath, JSON.stringify(normalizedEmails, null, 2), {
-      access: "public",
+      access: "private",
       addRandomSuffix: false,
+      allowOverwrite: true,
       contentType: "application/json",
-      cacheControlMaxAge: 0,
+      cacheControlMaxAge: 60,
     });
 
     return normalizedEmails;
