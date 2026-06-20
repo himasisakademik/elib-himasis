@@ -1,6 +1,7 @@
 import { list, put } from "@vercel/blob";
 import fs from "fs/promises";
 import path from "path";
+import { blobMissingMessage, hasVercelBlobStore } from "@/lib/blob-config";
 
 const localEmailsFilePath = path.join(process.cwd(), "allowed-emails.json");
 const blobEmailsPath = "config/allowed-emails.json";
@@ -47,7 +48,7 @@ async function readBlobAllowedEmails(): Promise<string[] | null> {
 }
 
 export async function getAllowedEmails(): Promise<string[]> {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  if (hasVercelBlobStore()) {
     const blobEmails = await readBlobAllowedEmails();
     if (blobEmails) return blobEmails;
   }
@@ -58,7 +59,7 @@ export async function getAllowedEmails(): Promise<string[]> {
 export async function writeAllowedEmails(emails: string[]): Promise<string[]> {
   const normalizedEmails = normalizeEmails(emails);
 
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  if (hasVercelBlobStore()) {
     await put(blobEmailsPath, JSON.stringify(normalizedEmails, null, 2), {
       access: "public",
       addRandomSuffix: false,
@@ -70,7 +71,7 @@ export async function writeAllowedEmails(emails: string[]): Promise<string[]> {
   }
 
   if (process.env.VERCEL) {
-    throw new Error("BLOB_READ_WRITE_TOKEN is required to update allowed emails on Vercel.");
+    throw new Error(blobMissingMessage);
   }
 
   await fs.writeFile(localEmailsFilePath, JSON.stringify(normalizedEmails, null, 2));

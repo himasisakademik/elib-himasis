@@ -1,6 +1,7 @@
 import { del, list, put } from "@vercel/blob";
 import fs from "fs/promises";
 import path from "path";
+import { hasVercelBlobStore } from "@/lib/blob-config";
 
 export interface MaterialMetadata {
   name: string;
@@ -22,10 +23,6 @@ export interface MaterialMetadata {
 const localJsonDir = path.join(process.cwd(), "uploads/e-lib/json");
 const blobPrefix = "materials/json/";
 const blobMarkerPath = `${blobPrefix}.initialized.json`;
-
-function hasBlobToken() {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
-}
 
 function metadataBlobPath(name: string) {
   return `${blobPrefix}${Buffer.from(name, "utf8").toString("base64url")}.json`;
@@ -123,7 +120,7 @@ async function markBlobInitialized() {
 }
 
 async function ensureBlobInitialized() {
-  if (!hasBlobToken()) return;
+  if (!hasVercelBlobStore()) return;
 
   const marker = await findBlob(blobMarkerPath);
   if (marker) return;
@@ -134,7 +131,7 @@ async function ensureBlobInitialized() {
 }
 
 export async function getMaterialMetadata(name: string): Promise<MaterialMetadata | null> {
-  if (hasBlobToken()) {
+  if (hasVercelBlobStore()) {
     await ensureBlobInitialized();
     const blob = await findBlob(metadataBlobPath(name));
     if (!blob) return null;
@@ -146,7 +143,7 @@ export async function getMaterialMetadata(name: string): Promise<MaterialMetadat
 }
 
 export async function listMaterialMetadata(category: string): Promise<MaterialMetadata[]> {
-  if (hasBlobToken()) {
+  if (hasVercelBlobStore()) {
     await ensureBlobInitialized();
     const blobs = await listAllBlobs(blobPrefix);
     const metadataBlobs = blobs.filter(
@@ -177,7 +174,7 @@ export async function saveMaterialMetadata(
   metadata: MaterialMetadata,
   previousName?: string
 ): Promise<MaterialMetadata> {
-  if (hasBlobToken()) {
+  if (hasVercelBlobStore()) {
     await ensureBlobInitialized();
     await putBlobMetadata(metadata);
 
@@ -199,7 +196,7 @@ export async function saveMaterialMetadata(
 }
 
 export async function deleteMaterialMetadata(name: string): Promise<boolean> {
-  if (hasBlobToken()) {
+  if (hasVercelBlobStore()) {
     await ensureBlobInitialized();
     const blob = await findBlob(metadataBlobPath(name));
     if (!blob) return false;
