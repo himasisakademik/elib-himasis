@@ -1,38 +1,13 @@
   import { NextRequest, NextResponse } from "next/server";
-  import { writeFile, mkdir, readdir, readFile, rename } from "fs/promises";
-  import { join } from "path";
-  import fs from "fs";
+  import {
+    deleteMaterialMetadata,
+    getMaterialMetadata,
+    listMaterialMetadata,
+    saveMaterialMetadata,
+    type MaterialMetadata,
+  } from "@/lib/material-metadata";
 
-  interface Metadata {
-    name: string;
-    mataKuliah?: string;
-    semester?: string;
-    penyusun?: string;
-    category: string;
-    originalFileName?: string;
-    fileSize?: number; 
-    uploadTime: string;
-
-    penerbit?: string;
-    tahunTerbit?: string;
-    deskripsi?: string;
-
-    // judulJurnal?: string;
-    // penulisJurnal?: string;
-    // penerbitJurnal?: string;
-    // tahunJurnal?: string;
-    // asalJurnal?: string;
-    // judulTA?: string;
-    // namaTA?: string;
-    // tahunTA?: string;
-    
-    gdriveUrl?: string;
-    downloadUrl?: string;
-    tahun?: string;
-  }
-
-  const uploadDir = join(process.cwd(), "uploads/e-lib");
-  const jsonDir = join(uploadDir, "json");
+  export const dynamic = "force-dynamic";
 
   export const config = {
     api: {
@@ -102,7 +77,7 @@
           );
         }
 
-        const metadata: Metadata = {
+        const metadata: MaterialMetadata = {
           name,
           mataKuliah,
           semester,
@@ -117,14 +92,7 @@
           deskripsi,
         };
 
-        await mkdir(jsonDir, { recursive: true });
-
-        const metadataFilePath = join(jsonDir, `${name}.json`);
-
-        await writeFile(
-          metadataFilePath,
-          JSON.stringify(metadata, null, 2)
-        );
+        await saveMaterialMetadata(metadata);
 
         return NextResponse.json({
           message: "Metadata saved successfully",
@@ -166,7 +134,7 @@
       //   }
       // }
 
-      const metadata: Metadata = {
+      const metadata: MaterialMetadata = {
         name,
         mataKuliah,
         semester,
@@ -178,14 +146,7 @@
         uploadTime: new Date().toISOString(),
       };
 
-      await mkdir(jsonDir, { recursive: true });
-
-      const metadataFilePath = join(jsonDir, `${name}.json`);
-
-      await writeFile(
-        metadataFilePath,
-        JSON.stringify(metadata, null, 2)
-      );
+      await saveMaterialMetadata(metadata);
 
       return NextResponse.json({
         message: "File uploaded successfully",
@@ -205,22 +166,8 @@
     const { fileName, ...updatedData } = await request.json();
   
     try {
-      const existingMetadataPath = join(jsonDir, `${fileName}.json`);
-      let existingMetadata: any = {};
-  
-      try {
-        const metadataContent = await readFile(
-          existingMetadataPath,
-          "utf-8"
-        );
-  
-        existingMetadata = JSON.parse(metadataContent);
-      } catch (error) {
-        console.error(
-          "Error reading existing metadata:",
-          error
-        );
-      }
+      const existingMetadata: Partial<MaterialMetadata> =
+        await getMaterialMetadata(fileName) ?? {};
   
       const preservedUploadTime =
         updatedData.uploadTime ||
@@ -251,27 +198,7 @@
         uploadTime: preservedUploadTime,
       };
   
-      const metadataFilePath = join(
-        jsonDir,
-        `${fileName}.json`
-      );
-  
-      const newMetadataFilePath = join(
-        jsonDir,
-        `${updatedData.name}.json`
-      );
-  
-      await writeFile(
-        newMetadataFilePath,
-        JSON.stringify(metadata, null, 2)
-      );
-  
-      if (
-        fileName !== updatedData.name &&
-        fs.existsSync(metadataFilePath)
-      ) {
-        await fs.promises.unlink(metadataFilePath);
-      }
+      await saveMaterialMetadata(metadata as MaterialMetadata, fileName);
   
       return NextResponse.json({
         message: "Metadata updated successfully",
@@ -358,10 +285,7 @@
       //   fs.unlinkSync(filePath);
       // }
 
-      const metadataFilePath = join(jsonDir, `${file}.json`);
-      if (fs.existsSync(metadataFilePath)) {
-        fs.unlinkSync(metadataFilePath);
-      }
+      await deleteMaterialMetadata(file);
 
       return NextResponse.json({ message: "File deleted successfully" });
     } catch (error) {
@@ -393,42 +317,21 @@
     }
 
     try {
-      await mkdir(jsonDir, { recursive: true });
-
-      const metadataFiles = await readdir(jsonDir);
-
-      const filePromises = metadataFiles.map(async (metadataFile) => {
-        if (!metadataFile.endsWith(".json")) return null;
-
-        try {
-          const metadataPath = join(jsonDir, metadataFile);
-          const metadataContent = await readFile(metadataPath, "utf-8");
-          const metadata: Metadata = JSON.parse(metadataContent);
-
-          if (metadata.category !== category) return null;
-
-          return {
-            name: metadata.name || "-",
-            mataKuliah: metadata.mataKuliah || "-",
-            semester: metadata.semester || "-",
-            penyusun: metadata.penyusun || "-",
-            tahun: metadata.tahun || "-",
-            uploadTime: metadata.uploadTime || "-",
-            gdriveUrl: metadata.gdriveUrl || "",
-            downloadUrl: metadata.downloadUrl || "",
-            size: metadata.fileSize || "-",
-            penerbit: metadata.penerbit || "-",
-            tahunTerbit: metadata.tahunTerbit || "-",
-            deskripsi: metadata.deskripsi || "-",
-          };
-        } catch (err) {
-          console.error("Error reading metadata:", metadataFile, err);
-          return null;
-        }
-      });
-
-      const results = await Promise.all(filePromises);
-      const fileList = results.filter((item) => item !== null);
+      const metadataList = await listMaterialMetadata(category);
+      const fileList = metadataList.map((metadata) => ({
+        name: metadata.name || "-",
+        mataKuliah: metadata.mataKuliah || "-",
+        semester: metadata.semester || "-",
+        penyusun: metadata.penyusun || "-",
+        tahun: metadata.tahun || "-",
+        uploadTime: metadata.uploadTime || "-",
+        gdriveUrl: metadata.gdriveUrl || "",
+        downloadUrl: metadata.downloadUrl || "",
+        size: metadata.fileSize || "-",
+        penerbit: metadata.penerbit || "-",
+        tahunTerbit: metadata.tahunTerbit || "-",
+        deskripsi: metadata.deskripsi || "-",
+      }));
 
       return NextResponse.json(fileList);
     } catch (error) {
