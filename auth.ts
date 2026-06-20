@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import fs from "fs/promises";
 import path from "path";
 
-const SUPER_ADMIN_EMAIL = "andryalfarisi015";
+const SUPER_ADMIN_EMAIL = "nabilzihni08";
 const emailsFilePath = path.join(process.cwd(), "allowed-emails.json");
 
 async function getAllowedEmails(): Promise<string[]> {
