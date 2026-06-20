@@ -2,20 +2,8 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import fs from "fs/promises";
-import path from "path";
+import { getAllowedEmails } from "@/lib/allowed-emails";
 import { SUPER_ADMIN_EMAIL } from "@/lib/admin-config";
-
-const emailsFilePath = path.join(process.cwd(), "allowed-emails.json");
-
-async function getAllowedEmails(): Promise<string[]> {
-  try {
-    const data = await fs.readFile(emailsFilePath, "utf-8");
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
 
 export async function handleGoogleSignIn(formData: FormData) {
   try {
