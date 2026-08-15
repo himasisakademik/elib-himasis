@@ -1,434 +1,283 @@
-  import { NextRequest, NextResponse } from "next/server";
-  import {
-    deleteMaterialMetadata,
-    getMaterialMetadata,
-    listMaterialMetadata,
-    saveMaterialMetadata,
-    type MaterialMetadata,
-  } from "@/lib/material-metadata";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  deleteMaterialMetadata,
+  getMaterialMetadata,
+  listMaterialMetadata,
+  saveMaterialMetadata,
+  type MaterialMetadata,
+} from "@/lib/material-metadata";
 
-  export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
-  export const config = {
-    api: {
-      bodyParser: false,
-    },
-  };
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
-  function extractFileId(url: string) {
-    const match = url.match(/\/d\/([^/]+)/);
-    return match ? match[1] : null;
-  }
-  export async function POST(request: NextRequest) {
-    try {
-      const formData = await request.formData();
+const allowedCategories = ["matkul", "umum"] as const;
+type Category = (typeof allowedCategories)[number];
 
-      const gdriveUrl = formData.get("gdriveUrl") as string;
-      const name = formData.get("name") as string;
-      const mataKuliah = formData.get("mataKuliah") as string;
-      const semester = formData.get("semester") as string;
-      const penyusun = formData.get("penyusun") as string;
-      const category = formData.get("category") as string;
-      // const tahun = formData.get("tahun") as string;
+function isCategory(value: string): value is Category {
+  return allowedCategories.includes(value as Category);
+}
 
-      const fileId = extractFileId(gdriveUrl);
+function getFormText(formData: FormData, key: string) {
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
+}
 
-      if (
-        !name ||
-        !mataKuliah ||
-        !semester ||
-        !penyusun ||
-        // !tahun ||
-        !gdriveUrl ||
-        !category
-      ) {
-        return NextResponse.json(
-          { error: "Missing required fields" },
-          { status: 400 }
-        );
-      }
+function getJsonText(data: unknown, key: string) {
+  if (!data || typeof data !== "object") return "";
 
-      // if (!file || !name || !category) {
-      //   return NextResponse.json(
-      //     { error: "Missing required fields" },
-      //     { status: 400 },
-      //   );
-      // }
+  const value = (data as Record<string, unknown>)[key];
+  return typeof value === "string" ? value.trim() : "";
+}
 
-      if (!fileId) {
-        return NextResponse.json(
-          { error: "Invalid Google Drive URL" },
-          { status: 400 }
-        );
-      }
+function extractFileId(url: string) {
+  const match = url.match(/\/d\/([^/]+)/);
+  return match ? match[1] : null;
+}
 
-      const downloadUrl =
-        `https://drive.google.com/uc?export=download&id=${fileId}`;
+function buildDownloadUrl(gdriveUrl: string) {
+  const fileId = extractFileId(gdriveUrl);
+  return fileId
+    ? `https://drive.google.com/uc?export=download&id=${fileId}`
+    : null;
+}
 
-      if (category === "umum") {
-        const penerbit = formData.get("penerbit") as string;
-        const tahunTerbit = formData.get("tahun_terbit") as string;
-        const deskripsi = formData.get("deskripsi") as string;
+function buildLegacyDownloadUrl(fileName: string, category: string) {
+  return `/api/downloadmateri?file=${encodeURIComponent(
+    fileName,
+  )}&category=${encodeURIComponent(category)}`;
+}
 
-        if (!penerbit || !tahunTerbit || !deskripsi) {
-          return NextResponse.json(
-            { error: 'Missing required fields for "umum" category' },
-            { status: 400 },
-          );
-        }
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    const name = getFormText(formData, "name");
+    const gdriveUrl = getFormText(formData, "gdriveUrl");
+    const categoryValue = getFormText(formData, "category");
 
-        const metadata: MaterialMetadata = {
-          name,
-          mataKuliah,
-          semester,
-          penyusun,
-          tahun: new Date().getFullYear().toString(),
-          category,
-          gdriveUrl,
-          downloadUrl,
-          uploadTime: new Date().toISOString(),
-          penerbit,
-          tahunTerbit,
-          deskripsi,
-        };
-
-        await saveMaterialMetadata(metadata);
-
-        return NextResponse.json({
-          message: "Metadata saved successfully",
-          ...metadata,
-        });
-      }
-
-      // else if (category === "jurnal") {
-      //   const judulJurnal = formData.get("juduljurnal") as string;
-      //   const penulisJurnal = formData.get("penulisjurnal") as string;
-      //   const penerbitJurnal = formData.get("penerbitjurnal") as string;
-      //   const tahunJurnal = formData.get("tahunjurnal") as string;
-      //   const asalJurnal = formData.get("asaljurnal") as string;
-      //
-      //   if (
-      //     !judulJurnal ||
-      //     !penulisJurnal ||
-      //     !penerbitJurnal ||
-      //     !tahunJurnal ||
-      //     !asalJurnal
-      //   ) {
-      //     return NextResponse.json(
-      //       { error: 'Missing required fields for "umum" category' },
-      //       { status: 400 },
-      //     );
-      //   }
-      // }
-
-      // else if (category === "tugas-akhir") {
-      //   const judulTA = formData.get("judulta") as string;
-      //   const namaTA = formData.get("namata") as string;
-      //   const tahunTA = formData.get("tahunta") as string;
-      //
-      //   if (!judulTA || !namaTA || !tahunTA) {
-      //     return NextResponse.json(
-      //       { error: 'Missing required fields for "umum" category' },
-      //       { status: 400 },
-      //     );
-      //   }
-      // }
-
-      const metadata: MaterialMetadata = {
-        name,
-        mataKuliah,
-        semester,
-        penyusun,
-        tahun: new Date().getFullYear().toString(),
-        category,
-        gdriveUrl,
-        downloadUrl,
-        uploadTime: new Date().toISOString(),
-      };
-
-      await saveMaterialMetadata(metadata);
-
-      return NextResponse.json({
-        message: "File uploaded successfully",
-        ...metadata,
-      });
-    } catch (error) {
-      console.error(error);
-
+    if (!name || !gdriveUrl || !isCategory(categoryValue)) {
       return NextResponse.json(
-        { error: "Server error" },
-        { status: 500 }
-      );
-    }
-  }
-
-  export async function PUT(request: NextRequest) {
-    const { fileName, ...updatedData } = await request.json();
-  
-    try {
-      const existingMetadata: Partial<MaterialMetadata> =
-        await getMaterialMetadata(fileName) ?? {};
-  
-      const preservedUploadTime =
-        updatedData.uploadTime ||
-        existingMetadata.uploadTime ||
-        new Date().toISOString();
-  
-      const gdriveUrl =
-        updatedData.gdriveUrl ||
-        existingMetadata.gdriveUrl;
-  
-      let downloadUrl =
-        existingMetadata.downloadUrl || "";
-  
-      if (gdriveUrl) {
-        const fileId = extractFileId(gdriveUrl);
-  
-        if (fileId) {
-          downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-        }
-      }
-  
-      const metadata = {
-        ...existingMetadata,
-        ...updatedData,
-        gdriveUrl,
-        downloadUrl,
-        originalFileName: updatedData.name,
-        uploadTime: preservedUploadTime,
-      };
-  
-      await saveMaterialMetadata(metadata as MaterialMetadata, fileName);
-  
-      return NextResponse.json({
-        message: "Metadata updated successfully",
-        data: metadata,
-      });
-    } catch (error) {
-      console.error(error);
-  
-      return NextResponse.json(
-        { error: "Failed to update metadata" },
-        { status: 500 }
-      );
-    }
-  }
-
-  // export async function PUT(request: NextRequest) {
-  //   const { fileName, ...updatedData } = await request.json();
-
-  //   try {
-  //     const existingMetadataPath = join(jsonDir, `${fileName}.json`);
-  //     let existingMetadata = {};
-
-  //     try {
-  //       const metadataContent = await readFile(existingMetadataPath, "utf-8");
-  //       existingMetadata = JSON.parse(metadataContent);
-  //     } catch (error) {
-  //       console.error("Error reading existing metadata:", error);
-  //     }
-
-  //     const oldFilePath = join(uploadDir, updatedData.category, fileName);
-  //     const newFilePath = join(uploadDir, updatedData.category, updatedData.name);
-
-  //     const metadataFilePath = join(jsonDir, `${fileName}.json`);
-  //     const newMetadataFilePath = join(jsonDir, `${updatedData.name}.json`);
-
-  //     const preservedUploadTime =
-  //       updatedData.uploadTime ||
-  //       (existingMetadata as any).uploadTime ||
-  //       new Date().toISOString();
-
-  //     const metadata = {
-  //       ...updatedData,
-  //       originalFileName: updatedData.name,
-  //       uploadTime: preservedUploadTime,
-  //     };
-
-  //     if (fileName !== updatedData.name) {
-  //       await rename(oldFilePath, newFilePath);
-  //     } else {
-  //     }
-
-  //     await writeFile(newMetadataFilePath, JSON.stringify(metadata));
-
-  //     if (fileName !== updatedData.name && fs.existsSync(metadataFilePath)) {
-  //       await fs.promises.unlink(metadataFilePath);
-  //     }
-
-  //     return NextResponse.json({
-  //       message: "File and metadata updated successfully",
-  //       uploadTime: preservedUploadTime,
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     return NextResponse.json(
-  //       { error: "Failed to update file and metadata" },
-  //       { status: 500 },
-  //     );
-  //   }
-  // }
-
-  export async function DELETE(request: NextRequest) {
-    const { file, category } = await request.json();
-
-    if (!file || !category) {
-      return NextResponse.json(
-        { error: "Missing file or category parameter" },
+        { error: "Missing or invalid required fields" },
         { status: 400 },
       );
     }
 
-    try {
-      // const filePath = join(uploadDir, category, file);
-      // if (fs.existsSync(filePath)) {
-      //   fs.unlinkSync(filePath);
-      // }
+    const downloadUrl = buildDownloadUrl(gdriveUrl);
 
-      await deleteMaterialMetadata(file);
-
-      return NextResponse.json({ message: "File deleted successfully" });
-    } catch (error) {
-      console.error(error);
+    if (!downloadUrl) {
       return NextResponse.json(
-        { error: "Failed to delete the file" },
-        { status: 500 },
+        { error: "Invalid Google Drive URL" },
+        { status: 400 },
       );
     }
+
+    const baseMetadata = {
+      name,
+      tahun: new Date().getFullYear().toString(),
+      category: categoryValue,
+      gdriveUrl,
+      downloadUrl,
+      uploadTime: new Date().toISOString(),
+    };
+
+    let metadata: MaterialMetadata;
+
+    if (categoryValue === "matkul") {
+      const mataKuliah = getFormText(formData, "mataKuliah");
+      const semester = getFormText(formData, "semester");
+      const penyusun = getFormText(formData, "penyusun");
+
+      if (!mataKuliah || !semester || !penyusun) {
+        return NextResponse.json(
+          { error: 'Missing required fields for "matkul" category' },
+          { status: 400 },
+        );
+      }
+
+      metadata = {
+        ...baseMetadata,
+        mataKuliah,
+        semester,
+        penyusun,
+      };
+    } else {
+      const penerbit = getFormText(formData, "penerbit");
+      const tahunTerbit = getFormText(formData, "tahun_terbit");
+      const deskripsi = getFormText(formData, "deskripsi");
+
+      if (!penerbit || !tahunTerbit || !deskripsi) {
+        return NextResponse.json(
+          { error: 'Missing required fields for "umum" category' },
+          { status: 400 },
+        );
+      }
+
+      metadata = {
+        ...baseMetadata,
+        penerbit,
+        tahunTerbit,
+        deskripsi,
+      };
+    }
+
+    await saveMaterialMetadata(metadata);
+
+    return NextResponse.json({
+      message: "File uploaded successfully",
+      ...metadata,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
+}
 
-  export async function GET(request: NextRequest) {
-    const category = request.nextUrl.searchParams.get("category");
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const fileName = getJsonText(body, "fileName");
 
-    if (!category) {
+    if (!fileName) {
       return NextResponse.json(
-        { error: "Category is required" },
-        { status: 400 }
+        { error: "File name is required" },
+        { status: 400 },
       );
     }
 
-    const allowedCategories = ["matkul", "umum"];
+    const existingMetadata = await getMaterialMetadata(fileName);
 
-    if (!allowedCategories.includes(category)) {
+    if (!existingMetadata) {
+      return NextResponse.json({ error: "Metadata not found" }, { status: 404 });
+    }
+
+    const updatedData =
+      body && typeof body === "object"
+        ? { ...(body as Record<string, unknown>) }
+        : {};
+
+    delete updatedData.fileName;
+
+    const categoryValue =
+      getJsonText(updatedData, "category") || existingMetadata.category;
+
+    if (!isCategory(categoryValue)) {
       return NextResponse.json(
         { error: "Invalid category" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    try {
-      const metadataList = await listMaterialMetadata(category);
-      const fileList = metadataList.map((metadata) => ({
+    const name = getJsonText(updatedData, "name") || existingMetadata.name;
+    const requestedGdriveUrl = getJsonText(updatedData, "gdriveUrl");
+    const gdriveUrl = requestedGdriveUrl || existingMetadata.gdriveUrl || "";
+    const downloadUrl = gdriveUrl
+      ? buildDownloadUrl(gdriveUrl)
+      : existingMetadata.downloadUrl || "";
+
+    if (gdriveUrl && !downloadUrl) {
+      return NextResponse.json(
+        { error: "Invalid Google Drive URL" },
+        { status: 400 },
+      );
+    }
+
+    const metadata: MaterialMetadata = {
+      ...existingMetadata,
+      ...updatedData,
+      name,
+      category: categoryValue,
+      gdriveUrl: gdriveUrl || undefined,
+      downloadUrl: downloadUrl || undefined,
+      originalFileName: existingMetadata.originalFileName || fileName,
+      uploadTime:
+        getJsonText(updatedData, "uploadTime") ||
+        existingMetadata.uploadTime ||
+        new Date().toISOString(),
+    } as MaterialMetadata;
+
+    await saveMaterialMetadata(metadata, fileName);
+
+    return NextResponse.json({
+      message: "Metadata updated successfully",
+      data: metadata,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Failed to update metadata" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const { file, category } = await request.json();
+
+  if (!file || !category) {
+    return NextResponse.json(
+      { error: "Missing file or category parameter" },
+      { status: 400 },
+    );
+  }
+
+  try {
+    await deleteMaterialMetadata(file);
+    return NextResponse.json({ message: "File deleted successfully" });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Failed to delete the file" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  const categoryValue = request.nextUrl.searchParams.get("category") || "";
+
+  if (!isCategory(categoryValue)) {
+    return NextResponse.json(
+      { error: "Invalid category" },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const metadataList = await listMaterialMetadata(categoryValue);
+    const fileList = metadataList.map((metadata) => {
+      const legacyFileName = metadata.originalFileName || metadata.name;
+      const downloadUrl =
+        metadata.downloadUrl ||
+        metadata.gdriveUrl ||
+        buildLegacyDownloadUrl(legacyFileName, categoryValue);
+
+      return {
         name: metadata.name || "-",
+        originalFileName: metadata.originalFileName || "",
         mataKuliah: metadata.mataKuliah || "-",
         semester: metadata.semester || "-",
         penyusun: metadata.penyusun || "-",
         tahun: metadata.tahun || "-",
         uploadTime: metadata.uploadTime || "-",
         gdriveUrl: metadata.gdriveUrl || "",
-        downloadUrl: metadata.downloadUrl || "",
+        downloadUrl,
         size: metadata.fileSize || "-",
         penerbit: metadata.penerbit || "-",
         tahunTerbit: metadata.tahunTerbit || "-",
         deskripsi: metadata.deskripsi || "-",
-      }));
+      };
+    });
 
-      return NextResponse.json(fileList);
-    } catch (error) {
-      console.error(
-        "Error reading metadata:",
-        error
-      );
-
-      return NextResponse.json([]);
-    }
+    return NextResponse.json(fileList);
+  } catch (error) {
+    console.error("Error reading metadata:", error);
+    return NextResponse.json([]);
   }
-
-  // export async function GET(request: NextRequest) {
-  //   const category = request.nextUrl.searchParams.get("category");
-  //   if (!category) {
-  //     return NextResponse.json(
-  //       { error: "Category is required" },
-  //       { status: 400 },
-  //     );
-  //   }
-
-  //   const allowedCategories = ["matkul", "umum"];
-  //   if (!allowedCategories.includes(category)) {
-  //     return NextResponse.json({ error: "Invalid category" }, { status: 400 });
-  //   }
-
-  //   // const categoryDir = join(uploadDir, category);
-
-  //   try {
-  //     await mkdir(categoryDir, { recursive: true });
-
-  //     // const files = await readdir(categoryDir);
-
-  //     const fileList: any[] = [];
-
-  //     for (const file of files) {
-  //       const filePath = join(categoryDir, file);
-
-  //       let stats;
-  //       try {
-  //         stats = await fs.promises.stat(filePath);
-  //       } catch {
-  //         continue;
-  //       }
-
-  //       if (stats.isFile()) {
-  //         const metadataFilePath = join(jsonDir, `${file}.json`);
-  //         let metadata: Metadata = {
-  //           name: "",
-  //           mataKuliah: "",
-  //           category: "",
-  //           originalFileName: "",
-  //           fileSize: 0,
-  //           uploadTime: "",
-  //           penyusun: "",
-  //           semester: "",
-  //         };
-
-  //         try {
-  //           const metadataFile = await readFile(metadataFilePath, "utf-8");
-  //           metadata = JSON.parse(metadataFile);
-  //         } catch (err) {
-  //           console.error("Error reading metadata for file", file);
-  //         }
-
-  //         fileList.push({
-  //           name: file,
-  //           mataKuliah: metadata.mataKuliah || "-",
-  //           size: stats.size,
-  //           semester: metadata.semester || "-",
-  //           penyusun: metadata.penyusun || "-",
-  //           uploadTime: metadata.uploadTime || "-",
-
-  //           gdriveUrl: metadata.gdriveUrl || "",
-  //           downloadUrl: metadata.downloadUrl || "",
-            
-  //           penerbit: metadata.penerbit || "-",
-  //           tahunTerbit: metadata.tahunTerbit || "-",
-  //           deskripsi: metadata.deskripsi || "-",
-            
-  //           // judulJurnal: metadata.judulJurnal || "-",
-  //           // penulisJurnal: metadata.penulisJurnal || "-",
-  //           // penerbitJurnal: metadata.penerbitJurnal || "-",
-  //           // tahunJurnal: metadata.tahunJurnal || "-",
-  //           // asalJurnal: metadata.asalJurnal || "-",
-  //           // judulTA: metadata.judulTA || "-",
-  //           // namaTA: metadata.namaTA || "-",
-  //           // tahunTA: metadata.tahunTA || "-",
-
-  //           // path: `/api/downloadmateri?file=${encodeURIComponent(file)}&category=${encodeURIComponent(category)}`,
-  //         });
-  //       }
-  //     }
-
-  //     return NextResponse.json(fileList);
-  //   } catch (error) {
-  //     console.error("Error reading files for category:", category, error);
-  //     return NextResponse.json([]);
-  //   }
-  // }
+}

@@ -658,7 +658,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={file.gdriveUrl}
+                        href={file.gdriveUrl || file.downloadUrl || "#"}
                         className="bg-violet-500/20 backdrop-blur-sm p-3 rounded-xl border border-violet-500/30 text-violet-400 hover:text-blue-300 hover:bg-blue-500/30 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-blue-500/25"
                       >
                         <Eye className="w-4 h-4" />

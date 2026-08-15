@@ -36,6 +36,7 @@ interface FileData {
   path: string;
   mataKuliah?: string;
   gdriveUrl?: string;
+  downloadUrl?: string;
   semester?: string;
   penyusun?: string;
   penerbit?: string;
@@ -448,11 +449,15 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
     }
   };
 
-  const getShareUrl = (fileName: string): string => {
+  const getShareUrl = (file: FileData): string => {
+    if (file.downloadUrl || file.gdriveUrl) {
+      return file.downloadUrl || file.gdriveUrl || "#";
+    }
+
     return `${
       window.location.origin
     }/api/downloadmateri?file=${encodeURIComponent(
-      fileName,
+      file.name,
     )}&category=${encodeURIComponent(category)}`;
   };
 
@@ -637,19 +642,6 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                             required
                           />
                         </div>
-                        <div className="space-y-2 lg:col-span-2">
-                          <label className="block text-sm font-medium text-slate-300">
-                            Link Google Drive
-                          </label>
-                          <input
-                            type="text"
-                            value={gdriveUrl}
-                            onChange={(e) => setGdriveUrl(e.target.value)}
-                            placeholder="Cantumkan Link Google Drive"
-                            className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl"
-                            required
-                          />
-                        </div>
                       </>
                     )}
                     {/* {category === "jurnal" && (
@@ -807,6 +799,21 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                           />
                         </div>
                       </>
+                    )}
+                    {(category === "matkul" || category === "umum") && (
+                      <div className="space-y-2 lg:col-span-2">
+                        <label className="block text-sm font-medium text-slate-300">
+                          Link Google Drive
+                        </label>
+                        <input
+                          type="url"
+                          value={gdriveUrl}
+                          onChange={(e) => setGdriveUrl(e.target.value)}
+                          placeholder="https://drive.google.com/file/d/..."
+                          className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-xl"
+                          required
+                        />
+                      </div>
                     )}
                   </div>
 
@@ -1094,7 +1101,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
 
                       <div className="flex items-center justify-center lg:justify-end gap-2 flex-shrink-0">
                         <a
-                          href={getShareUrl(file.name)}
+                          href={getShareUrl(file)}
                           download
                           className="group/btn relative p-2 sm:p-3 bg-slate-700/50 hover:bg-blue-600 text-slate-400 hover:text-white rounded-xl transition-all duration-300 transform hover:scale-110"
                           title="Unduh"
@@ -1222,7 +1229,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
 
                     <div className="flex justify-center gap-2">
                       <a
-                        href={getShareUrl(file.name)}
+                        href={getShareUrl(file)}
                         download
                         className="p-2 bg-slate-700/50 hover:bg-blue-600 text-slate-400 hover:text-white rounded-lg transition-all duration-300"
                         title="Unduh"
@@ -1370,7 +1377,7 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                       <div className="space-y-2">
                         <label>Link Google Drive</label>
                         <input
-                          type="text"
+                          type="url"
                           value={updateFormData.gdriveUrl}
                           onChange={(e) =>
                             setUpdateFormData({
@@ -1544,6 +1551,21 @@ const UploadMateri: FC<{ session: any }> = ({ session }) => {
                             })
                           }
                           className="w-full bg-slate-700 p-2 rounded-md resize-none"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label>Link Google Drive</label>
+                        <input
+                          type="url"
+                          value={updateFormData.gdriveUrl}
+                          onChange={(e) =>
+                            setUpdateFormData({
+                              ...updateFormData,
+                              gdriveUrl: e.target.value,
+                            })
+                          }
+                          className="w-full bg-slate-700 p-2 rounded-md"
+                          placeholder="https://drive.google.com/file/d/..."
                         />
                       </div>
                     </>
