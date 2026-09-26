@@ -16,7 +16,15 @@ const clashDisplay = localFont({
 export const metadata: Metadata = {
   title: "E Library Himasis",
   description: "Bersatu Dalam Kolaborasi",
-  icons: "/himasis.png",
+  icons: {
+    icon: [
+      { url: "/logo-himasis.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+  },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
@@ -29,9 +37,6 @@ const HeadContent = () => (
   <head>
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
-    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png" />
     <meta name="theme-color" content="#0a0a0a" />
     {/* Google Tag Manager */}
     <script

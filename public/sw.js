@@ -1,8 +1,9 @@
-const CACHE_NAME = "elib-himasis-v1";
+const CACHE_NAME = "elib-himasis-v2";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
   "/favicon.ico",
+  "/logo-himasis.png",
   "/icons/icon-192.png",
   "/icons/icon-192-maskable.png",
   "/icons/icon-512.png",

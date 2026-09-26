@@ -92,8 +92,8 @@ const Header = () => {
                                 <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
                                 <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 p-2 rounded-xl border border-slate-700/50 group-hover:border-blue-500/50 transition-colors">
                                     <Image
-                                        src="/himasis.png"
-                                        alt="HiVerse Logo"
+                                        src="/logo-himasis.png"
+                                        alt="Logo HIMASIS"
                                         width={32}
                                         height={32}
                                         className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"

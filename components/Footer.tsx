@@ -169,7 +169,7 @@ const Footer: React.FC = () => {
                                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl sm:rounded-3xl blur-lg sm:blur-xl group-hover:blur-xl sm:group-hover:blur-2xl transition-all duration-500" />
                                 <div className="relative bg-white/5 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/10 shadow-2xl">
                                     <Image
-                                        src="/himasis.png"
+                                        src="/logo-himasis.png"
                                         alt="HIMASIS - Himpunan Mahasiswa Sistem Informasi"
                                         width={80}
                                         height={80}
