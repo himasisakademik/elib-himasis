@@ -17,6 +17,12 @@ export const metadata: Metadata = {
   title: "E Library Himasis",
   description: "Bersatu Dalam Kolaborasi",
   icons: "/himasis.png",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "E-Library HIMASIS",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 const HeadContent = () => (
@@ -24,9 +30,9 @@ const HeadContent = () => (
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon" sizes="192x192" href="/himasis.png" />
-    <link rel="apple-touch-icon" sizes="512x512" href="/himasis.png" />
-    <meta name="theme-color" content="#000000" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png" />
+    <meta name="theme-color" content="#0a0a0a" />
     {/* Google Tag Manager */}
     <script
       dangerouslySetInnerHTML={{

@@ -5,6 +5,7 @@ import { motion, useInView, useAnimation } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Twitter, Facebook, Instagram, Youtube, Music2 as Tiktok, Podcast as Spotify, ArrowUp, Heart } from "lucide-react";
+import { PwaInstallPrompt } from "./PwaInstallPrompt";
 
 interface NavigationLink {
     href: string;
@@ -301,6 +302,10 @@ const Footer: React.FC = () => {
                             </motion.div>
                         </motion.div>
                     </div>
+
+                    <motion.div className="mt-12 sm:mt-16" variants={itemVariants}>
+                        <PwaInstallPrompt />
+                    </motion.div>
 
                     <motion.div className="pt-8 sm:pt-12 mt-12 sm:mt-16 border-t border-white/10" variants={itemVariants}>
                         <div className="flex flex-col items-center gap-4 sm:gap-6">
